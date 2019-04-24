@@ -3,19 +3,16 @@
 
 using namespace std;
 
-#define GAY 333.2
+template <class SomeType>
+SomeType sum(SomeType a, SomeType b);
 
 int main(){
-  cout << "Hello world" << endl;
-  cout << GAY << endl;
-  unsigned int x = 1;
-  int b;
-  int a = (b=3,b+2);
-  cout << a << endl;
-  {
-    cout << ((1<2) ? "nigger" : "White man") << endl;
-    cout << x << endl;
-  }
-  cout << x << endl;
+  int x = 5;
+  cout << sum<int>(x,x) << endl;
   return 0;
+}
+
+template <class SomeType>
+SomeType sum(SomeType a, SomeType b){
+  return a + b;
 }
