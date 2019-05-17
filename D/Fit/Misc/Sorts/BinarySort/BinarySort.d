@@ -1,5 +1,24 @@
 
 import std.stdio;
+import std.array;
+
+
+void binsort(int[] lstSort);
+
+
+void main(){
+  int[] test = [5,3,7,-1,5,-10,10,6];
+  binsort(test[]);
+}
+
+void binsort(int[] lstSort){
+  Tree TopNode = new Tree;
+  TopNode.val = lstSort[0];
+  foreach(value; lstSort[1 .. $-1]){
+    TopNode.addNode(TopNode, value);
+  }
+  TopNode.printf(0);
+}
 
 class Tree{
   public{
@@ -8,10 +27,10 @@ class Tree{
   }
   private void makeNode(Tree parent, int value, int side);
 
-  void printf(){
-    if(left !is null) left.printf();
-    writeln(val);
-    if(right !is null) right.printf();
+  void printf(int count){
+    if(left !is null) left.printf(count + 1);
+    writeln(replicate("    ", count ),"--->", val);
+    if(right !is null) right.printf(count + 1);
   }
 
   void addNode(Tree parent, int value){
@@ -27,14 +46,4 @@ class Tree{
     (side == 0) ? (parent.left = newNode) : (parent.right = newNode);
     newNode.val = value;
   }
-}
-
-void main(){
-  int[] test = [5,3,7,-1,5,-10,10,6];
-  Tree TopNode = new Tree;
-  TopNode.val = test[0];
-  foreach(value; test[1 .. $-1]){
-    TopNode.addNode(TopNode, value);
-  }
-  TopNode.printf();
 }
