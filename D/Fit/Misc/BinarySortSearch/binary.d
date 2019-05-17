@@ -2,9 +2,17 @@
 import std.stdio;
 
 class Tree{
-  int val;
-  Tree parent, left, right;
+  public{
+    int val;
+    Tree parent, left, right;
+  }
   private void makeNode(Tree parent, int value, int side);
+
+  void printf(){
+    if(left !is null) left.printf();
+    writeln(val);
+    if(right !is null) right.printf();
+  }
 
   void addNode(Tree parent, int value){
     if (value < parent.val){
@@ -22,11 +30,11 @@ class Tree{
 }
 
 void main(){
+  int[] test = [5,3,7,-1,5,-10,10,6];
   Tree TopNode = new Tree;
-  TopNode.val = 10;
-  // left of 10
-  TopNode.addNode(TopNode, 5);
-  // left of 5
-  TopNode.addNode(TopNode, 3);
-  writeln(TopNode.left.left.val);
+  TopNode.val = test[0];
+  foreach(value; test[1 .. $-1]){
+    TopNode.addNode(TopNode, value);
+  }
+  TopNode.printf();
 }
