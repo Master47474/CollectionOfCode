@@ -7,26 +7,31 @@ import std.math;
 
 // funciton declerations
 void openFile(string filename,float splitf, string[]* classTrain, string[]* classTest, float[][]* dTrain, float[][]* dTest);
+float[][] getNeighbours(float[][] dTrain, float[] dataPoint, string[] cTrain, const int k);
 float distance(float[] inst1, float[] inst2);
+string classifiy(string[] cTrain, float[][] neighbours);
+float accuracy(string[] cTest, string[] predictions);
+void selectionSort(float[][]* arr);
+void swap(float* i, float* j);
+int min(float[] arr);
+
 
 void main(){
   string[] classifierTrain, classifierTest;
   float[][] dataTrain, dataTest;
   openFile("sup", 0.66, &classifierTrain, &classifierTest, &dataTrain, &dataTest);
 
-
-
-  for (int i = 0; i < dataTrain.length;i++){
-    writeln(dataTrain[i]," Is of Training -> ", classifierTrain[i]);
+  string[] predictions = [];
+  const int k = 3;
+  for (int i = 0; i < dataTest.length; i++){
+    float[][] neig = getNeighbours(dataTrain, dataTest[i], classifierTrain, k);
+    string classif = classifiy(classifierTrain, neig);
+    ++predictions.length;
+    predictions[i] = classif;
+    writefln("> Predicted -> %s | Actual -> %s" ,classif[0 .. $-1], classifierTest[i][0 .. $-1]);
   }
-  for (int i = 0; i < dataTest.length;i++){
-    writeln(dataTest[i]," Is of Testing -> ", classifierTrain[i]);
-  }
-
-  writeln(dataTrain[0]);
-  writeln(dataTrain[1]);
-  float x = distance(dataTrain[0], dataTrain[1], 3);
-  writeln(x);
+  float accurate = accuracy(classifierTest, predictions);
+  writeln("Accuracy of > ", accurate, "%");
 
 }
 
@@ -92,18 +97,85 @@ float distance(float[] inst1, float[] inst2){
 }
 
 
-
-string[] getNeighbours(float[][] dTrain, float[] dTest, string[] cTrain, int k){
-    float[] distances = [];
-    int length = dTest.length - 1;
+float[][] getNeighbours(float[][] dTrain, float[] dataPoint, string[] cTrain, const int k){
+    float[][] distances = [];
+    int length = dataPoint.length - 1;
     for (int i = 0; i < dTrain.length; i++){
-      int dist = distance(dTrain[i], dTest);
+      float dist = distance(dTrain[i], dataPoint);
       ++distances.length;
-      distances[i] = dist;
+      distances[i] = [i, dist];
     }
     // sort distances
-    float[] neighbours = [];
+    float[][] neighbours;
+    neighbours.length = k;
+    selectionSort(&distances);
     //get the first k elements and append to neighbours
-    
-    return neighbours[];
+    for (int i = 0; i < k; i++){
+      neighbours[i] = distances[i].dup;
+    }
+    return neighbours[][];
+}
+
+string classifiy(string[] cTrain, float[][] neighbours){
+  float[string] votes;
+  for (int i = 0; i < neighbours.length; i++){
+    string response = cTrain[to!int(neighbours[i][0])];
+    if (response in votes){
+      votes[response]++;
+    }else{
+      votes[response] = 1;
+    }
+  }
+  // get highest flower
+  string[] keys = votes.keys;
+  int counter = 0;
+  float max = votes[keys[counter]];
+  string retString = keys[counter];
+  foreach(line; votes){
+    if (line > max){
+      retString = keys[counter];
+      max = line;
+    }
+    counter++;
+  }
+  return retString;
+}
+
+float accuracy(string[] cTest, string[] predictions){
+  float correct = 0;
+  for (int i = 0; i < cTest.length; i++){
+    if(cTest[i] == predictions[i]){
+      correct += 1;
+    }
+  }
+  return (correct/to!float(cTest.length)) * 100.0;
+}
+
+
+
+void selectionSort(float[][]* arr){
+  for (int index = 0; index < arr.length; index++){
+    int mini = min((*arr)[index .. $].dup);
+    swap(&(*arr)[index], &(*arr)[index + mini]);
+  }
+}
+
+void swap(float[]* i, float[]* j){
+  float[] temp;
+  temp = *i;
+  *i = *j;
+  *j = temp;
+}
+
+
+int min(float[][] arr){
+  float min = arr[0][1];
+  int mini = 0;
+  for (int i = 1; i < arr.length; i++){
+    if (arr[i][1] < min){
+      min = arr[i][1];
+      mini = i;
+    }
+  }
+  return mini;
 }
