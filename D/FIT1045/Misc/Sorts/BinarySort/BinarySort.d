@@ -7,14 +7,14 @@ void binsort(int[] lstSort);
 
 
 void main(){
-  int[] test = [5,3,7,-1,5,-10,10,6];
+  int[] test = [5,2,1,-5,20,3,4];
   binsort(test[]);
 }
 
 void binsort(int[] lstSort){
   Tree TopNode = new Tree;
   TopNode.val = lstSort[0];
-  foreach(value; lstSort[1 .. $-1]){
+  foreach(value; lstSort[1 .. $]){
     TopNode.addNode(TopNode, value);
   }
   TopNode.printf(0);
