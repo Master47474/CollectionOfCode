@@ -13,6 +13,7 @@ void main(){
   float scale = 100.0;
   float maxX = max(trainX);
 
+  // normalize data
   foreach(i, line; trainX){
     line[] /= maxX;
     trainX[i] = line;
@@ -43,23 +44,40 @@ float sigmoid(float z){
   return s;
 }
 
+float dot(){
+
+}
+
 class NeralNetwork{
   const int inputLSize = 2, outputLSize = 1, hiddenLSize = 3;
+  // 2 x 3 matrix (2,3)
   float[hiddenLSize][inputLSize] W1;
+  // 3 x 1 matrix (1,3)
   float[outputLSize][hiddenLSize] W2;
 
+  // make W1 and W2 Weights random on creation
   this(){
     import std.algorithm.mutation;
-    //fill(this.W1, uniform!"()"(0.0f, 1.0f));
+    //w1 is a 2 x 3 matrix
     foreach(i, line; this.W1){
-      //this.W1[i] = fill(line,  uniform!"()"(0.0f, 1.0f));
+      float rndNum = uniform!"()"(0.0f, 1.0f);
+      // as rows are 3 long
+      float[] toFill = [rndNum, rndNum, rndNum];
+      this.W1[i] = toFill.dup;
     }
-    //fill(this.W2, uniform!"()"(0.0f, 1.0f));
+    //w2 is a 3x1 matirix
+    foreach(i, line; this.W2){
+      float rndNum = uniform!"()"(0.0f, 1.0f);
+      // as rows are 1 long
+      float[] toFill = [rndNum];
+      this.W2[i] = toFill.dup;
+    }
     writeln(this.W1);
-  //  writeln(this.W2);
+    writeln(this.W2);
   }
 
-  void foward(){
+  void foward(float[][] X){
     writeln(1);
+    //dotproduct
   }
 }
