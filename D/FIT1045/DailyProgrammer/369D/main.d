@@ -11,7 +11,7 @@ struct rgb {
 void main(){
   rgb red;
   // colour goes here
-  red.r=0; red.g=0; red.b=205;
+  red.r=2; red.g=12; red.b=6;
   //colour values printed
   writeln(red.r, " ",red.g, " ",red.b,);
   // hex values printed
