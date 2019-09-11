@@ -44,15 +44,18 @@ float sigmoid(float z){
   return s;
 }
 
-float dot(){
+float dot(int[][] vector1, int[][] vector2){
+  // [column][row]
 
+  return 0;
 }
 
 class NeralNetwork{
   const int inputLSize = 2, outputLSize = 1, hiddenLSize = 3;
-  // 2 x 3 matrix (2,3)
+  // [column][row]
+  // 2 x 3 matrix
   float[hiddenLSize][inputLSize] W1;
-  // 3 x 1 matrix (1,3)
+  // 3 x 1 matrix
   float[outputLSize][hiddenLSize] W2;
 
   // make W1 and W2 Weights random on creation
@@ -65,7 +68,7 @@ class NeralNetwork{
       float[] toFill = [rndNum, rndNum, rndNum];
       this.W1[i] = toFill.dup;
     }
-    //w2 is a 3x1 matirix
+    //w2 is a 3 x 1 matirix
     foreach(i, line; this.W2){
       float rndNum = uniform!"()"(0.0f, 1.0f);
       // as rows are 1 long
