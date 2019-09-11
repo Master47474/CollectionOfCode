@@ -32,10 +32,7 @@ void main(){
   }
   float accurate = accuracy(classifierTest, predictions);
   writeln("Accuracy of > ", accurate, "%");
-
 }
-
-
 
 
 void openFile(string filename,float splitf, string[]* classTrain, string[]* classTest, float[][]* dTrain, float[][]* dTest){
@@ -86,8 +83,6 @@ void openFile(string filename,float splitf, string[]* classTrain, string[]* clas
   *dTest = dataTest.dup;
 }
 
-
-
 float distance(float[] inst1, float[] inst2){
   float distance = 0;
   for (int i = 0; i < inst1.length; i++){
@@ -95,7 +90,6 @@ float distance(float[] inst1, float[] inst2){
   }
   return sqrt(distance);
 }
-
 
 float[][] getNeighbours(float[][] dTrain, float[] dataPoint, string[] cTrain, const int k){
     float[][] distances = [];
@@ -150,8 +144,6 @@ float accuracy(string[] cTest, string[] predictions){
   }
   return (correct/to!float(cTest.length)) * 100.0;
 }
-
-
 
 void selectionSort(float[][]* arr){
   for (int index = 0; index < arr.length; index++){
