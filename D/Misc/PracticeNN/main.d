@@ -44,9 +44,9 @@ float sigmoid(float z){
   return s;
 }
 
-float dot(int[][] vector1, int[][] vector2){
+float dot(int[] vector1){
   // [column][row]
-
+  
   return 0;
 }
 
