@@ -40,7 +40,7 @@ int main(){
   head = (struct Node*)malloc(sizeof(struct Node));
 
   // assign head and tail to be place holders
-  strcpy(head->data, "M");
+  strcpy(head->data, "NULL");
   head->next = NULL;
 
   int c, nl, nw, state;
@@ -63,7 +63,6 @@ int main(){
       // test if word is spelled correctly i.e find it in the file
       if (isSpelledCorrectly(currentword) == 0){
         insertNode(head, currentword);
-        printf("INSERTED WORD WRONG HERE \"%s\"\n", currentword);
       }
     }else if(state == OUTPP){
       state = INPP;
@@ -104,11 +103,16 @@ int isSpelledCorrectly(char word[]){
 
   // linear search through
   for(min; min <= max ; ++min){
-    printf("COMPARING \"%s\" to -> \"%s\"  %s  \n", word, dictionary[min] , word[0] == dictionary[min][0] ? "true" : "false");
     int i = 0;
-    if ( word == dictionary[min] )
-      return 1;
+    while(1){
+      if(word[i] != dictionary[min][i])
+        break;
+      if(word[i] == '\0' && dictionary[min][i] == '\0'){
+        return 1;
+      }
+      i++;
     }
+  }
   return 0;
 }
 
@@ -194,8 +198,9 @@ void insertNode(struct Node* head, char val[]){
 
 
 void printLL(struct Node* n){
-    while (n != NULL) {
-        printf(" %s \n", n->data);
-        n = n->next;
+    struct Node *current = n;
+    while (current != NULL) {
+        printf(" %s \n", current->data);
+        current = current->next;
     }
 }
