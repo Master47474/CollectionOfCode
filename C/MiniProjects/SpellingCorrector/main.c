@@ -51,8 +51,9 @@ int main(){
   nl = 0;
   printf("WE ABOUT TO LOOP NIGGA\n");
   while((c = getchar()) != EOF){
-    if( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') )
+    if( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ){
       currentword[i++] = c;
+    }
     if(c == '\n')
       ++nl;
     if(c == ' ' || c == '\n' || c == '\t'){
@@ -85,20 +86,24 @@ int main(){
 
 // returns 0 for false, returns 1 for true
 int isSpelledCorrectly(char word[]){
+  printf("WE TESTING %s\n", word);
   // get init range
   int min, mid, max;
+  min = mid = 0;
+  max = charLine[1].fileline;
   for(int i = 0; charLine[i].letter != word[0]; ++i){
     if(word[0] == 'y'){
       min = charLine[24].fileline;
       max = charLine[25].fileline;
-    }
-    if(word[0] == 'z'){
+    }else if(word[0] == 'z'){
       min = charLine[25].fileline;
       max = MAXLINES;
+    }else{
+      min = charLine[i+1].fileline;
+      max = charLine[i+2].fileline;
     }
-    min = charLine[i+1].fileline;
-    max = charLine[i+2].fileline;
   }
+  printf("%d, %d\n", min, max);
   mid = (min + max ) / 2; // was going to add different searching algorithm
 
   // linear search through
