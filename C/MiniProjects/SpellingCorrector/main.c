@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <windows.h>
 #include<string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
 
 
 // file maxLINES
@@ -39,9 +42,12 @@ int main(){
   struct Node* head = NULL;
   head = (struct Node*)malloc(sizeof(struct Node));
 
+
   // assign head and tail to be place holders
-  strcpy(head->data, "NULL");
+  strcpy(head->data, "-----");
   head->next = NULL;
+
+
 
   int c, nl, nw, state;
   char currentword[45];
@@ -49,10 +55,9 @@ int main(){
 
   state = OUTPP;
   nl = 0;
-  printf("WE ABOUT TO LOOP NIGGA\n");
   while((c = getchar()) != EOF){
     if( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ){
-      currentword[i++] = c;
+      currentword[i++] = tolower(c);
     }
     if(c == '\n')
       ++nl;
@@ -70,13 +75,6 @@ int main(){
     }
   }
 
-
-  //print all words in dictionary
-  /*
-  for(int i = 0; i < MAXLINES; i++){
-    printf("%s \n", dictionary[i]);
-  }
-  */
   printf("YOU SPELLED WRONGLY :\n");
   printLL(head);
 
@@ -86,7 +84,6 @@ int main(){
 
 // returns 0 for false, returns 1 for true
 int isSpelledCorrectly(char word[]){
-  printf("WE TESTING %s\n", word);
   // get init range
   int min, mid, max;
   min = mid = 0;
@@ -103,7 +100,6 @@ int isSpelledCorrectly(char word[]){
       max = charLine[i+2].fileline;
     }
   }
-  printf("%d, %d\n", min, max);
   mid = (min + max ) / 2; // was going to add different searching algorithm
 
   // linear search through
@@ -179,11 +175,11 @@ void loadDictionary(){
       }
     }
     // print array of structs
-
+    /*
     for(int i = 0; i < 26; i++){
       printf("%c is at line %d\n", charLine[i].letter, charLine[i].fileline);
     }
-
+    */
   }
   fclose(fp);
 }
@@ -195,9 +191,11 @@ void insertNode(struct Node* head, char val[]){
     current = current->next;
 
   // add new varaible
-  current->next = (struct Node *) malloc(sizeof(struct Node));
-  strcpy(head->data, val);
-  current->next->next = NULL;
+  struct Node* temp = NULL;
+  temp = (struct Node *) malloc(sizeof(struct Node));
+  strcpy(temp->data, val);
+  temp->next = NULL;
+  current->next = temp;
 }
 
 
