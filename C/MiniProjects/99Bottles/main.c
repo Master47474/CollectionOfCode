@@ -14,7 +14,7 @@ int main(){
 
 
 void printBottle(int bottles){
-  printf("%d ", bottles);
-  bottles == 1 ? printf("bottle ") : printf("bottles ");
-  printf("on the wall, take one down pass it around\n");
+  printf("%d %s on the wall, take one down pass it around\n", bottles, bottles == 1 ? "bottle" : "bottles" );
+  //bottles == 1 ? printf("bottle ") : printf("bottles ");
+  //printf("on the wall, take one down pass it around\n");
 }
