@@ -7,7 +7,7 @@ void loading(int buffer);
 char responses[][] = {"Certin", "Plausable", "unsure", "probably not", "Impossible"};
 
 int main(int argc, char *argv[]){
-
+  
 }
 
 
