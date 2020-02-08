@@ -10,6 +10,7 @@ int main(){
   while(maxBottles != 0){
     printBottle(maxBottles--);
   }
+  return 0;
 }
 
 
