@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+// Try a switch statement!!!
+
+
 struct Map {
   char type[8];
   int value;
