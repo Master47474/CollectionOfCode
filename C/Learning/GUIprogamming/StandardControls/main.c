@@ -56,6 +56,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         else
           MessageBox(hwnd, "Could not load small icon!", "Error", MB_OK | MB_ICONERROR);
 
+
       }
     break;
     case WM_COMMAND:

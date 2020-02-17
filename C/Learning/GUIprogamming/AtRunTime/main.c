@@ -16,47 +16,29 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     case WM_CREATE:
     // do this with in rescources next
       {
-        g_hToolbar = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_TOOLBAR), hwnd, ToolDlgProc);
-        if(g_hToolbar != NULL){
-          ShowWindow(g_hToolbar, SW_SHOW);
-        }else{
-          MessageBox(hwnd, "CreateDialog returned NULL", "Warning!", MB_OK | MB_ICONINFORMATION);
-        }
+        HFONT hfDefault;
+        HWND hEdit;
 
-        HMENU hMenu, hSubMenu;
-        HICON hIcon, hIconSm;
+        hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "",
+            WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
+            0, 0, 100, 100, hwnd, (HMENU)IDC_MAIN_EDIT, GetModuleHandle(NULL), NULL);
+        if(hEdit == NULL)
+            MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 
-        hMenu = CreateMenu();
-
-        hSubMenu = CreatePopupMenu();
-        //                              ------------ the command which also gets put through the WM COMMAND switch down below
-        AppendMenu(hSubMenu, MF_STRING, ID_FILE_EXIT, "E&xit");
-        AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
-
-        hSubMenu = CreatePopupMenu();
-        AppendMenu(hSubMenu, MF_STRING, ID_STUFF_GO, "&Go");
-        AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&Stuff");
-
-        hSubMenu = CreatePopupMenu();
-        AppendMenu(hSubMenu, MF_STRING, ID_WINDOW_SHOW, "&Show");
-        AppendMenu(hSubMenu, MF_STRING, ID_WINDOW_HIDE, "&Hide");
-        AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&Ect");
-
-        SetMenu(hwnd, hMenu);
-
-        hIcon = LoadImage(NULL, "my_icon.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
-        if(hIcon)
-          SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-        else
-          MessageBox(hwnd, "Could not load large icon!", "Error", MB_OK | MB_ICONERROR);
-
-        hIconSm = LoadImage(NULL, "my_icon.ico", IMAGE_ICON, 16, 16, LR_LOADFROMFILE);
-        if(hIconSm)
-          SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIconSm);
-        else
-          MessageBox(hwnd, "Could not load small icon!", "Error", MB_OK | MB_ICONERROR);
-
+        hfDefault = GetStockObject(DEFAULT_GUI_FONT);
+        SendMessage(hEdit, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
       }
+    break;
+    case WM_SIZE:
+    {
+        HWND hEdit;
+        RECT rcClient;
+
+        GetClientRect(hwnd, &rcClient);
+
+        hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
+        SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom, SWP_NOZORDER);
+    }
     break;
     case WM_COMMAND:
       switch (LOWORD(wParam)) {
@@ -143,22 +125,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   return Msg.wParam;
 
-}
-
-BOOL CALLBACK ToolDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam){
-  switch(Message){
-    case WM_COMMAND:
-      switch(LOWORD(wParam)){
-        case IDC_PRESS:
-          MessageBox(hwnd, "Hi!", "This is a message", MB_OK | MB_ICONEXCLAMATION);
-        break;
-        case IDC_OTHER:
-          MessageBox(hwnd, "Bye!", "THIS IS ALSO A message", MB_OK | MB_ICONEXCLAMATION);
-        break;
-      }
-    break;
-    default:
-      return FALSE;
-  }
-  return TRUE;
 }
