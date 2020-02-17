@@ -17,6 +17,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         MessageBox(hwnd, szFileName, "This Program is:", MB_OK | MB_ICONINFORMATION);
       }
     break;
+    case WM_COMMAND:
+      {
+        switch(LOWORD(lParam)){
+          case ID_FILE_EXIT:
+            PostMessage(hwnd, WM_CLOSE,0,0);
+          break;
+          case ID_STUFF_GO:
+            {// <-- making a variable in a switch statement we need the braces
+              char szFileName[MAX_PATH];
+              HINSTANCE hInstance = GetModuleHandle(NULL);
+
+              GetModuleFileName(hInstance, szFileName, MAX_PATH);
+              MessageBox(hwnd, szFileName, "This Program is:", MB_OK | MB_ICONINFORMATION);
+            }
+          break;
+        }
+      }
+    break;
     case WM_CLOSE:
       DestroyWindow(hwnd);
     break;

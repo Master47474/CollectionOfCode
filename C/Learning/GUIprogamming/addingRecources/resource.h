@@ -1,7 +1,7 @@
 #define IDI_MYICON  101
 
 #define ID_FILE_EXIT	4001
-
+#define ID_STUFF_GO 4002
 
 // to link rc
 // create windres rcfile.rc -o rcfile.o

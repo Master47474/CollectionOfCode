@@ -78,6 +78,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
           ShowWindow(g_hToolbar, SW_HIDE);
         break;
       }
+    break;
     case WM_CLOSE:
       DestroyWindow(hwnd);
     break;
