@@ -1,4 +1,5 @@
 #define IDC_MAIN_EDIT	101
+#define IDR_MYMENU 102
 #define IDI_MYICON 201
 
 #define ID_FILE_EXIT 9001
@@ -13,3 +14,7 @@
 
 #define ID_WINDOW_SHOW 9006
 #define ID_WINDOW_HIDE 9007
+
+#define ID_FILE_OPEN 9008
+#define ID_FILE_NEW 9009
+#define ID_FILE_SAVEAS 9010

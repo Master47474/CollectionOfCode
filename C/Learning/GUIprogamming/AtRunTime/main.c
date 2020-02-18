@@ -7,6 +7,11 @@ const char g_szClassName[] = "myWindowClass";
 HWND g_hToolbar = NULL;
 
 BOOL CALLBACK ToolDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
+BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName);
+BOOL SaveTextFileFromEdit(HWND hEdit, LPCTSTR pszFileName);
+void DoFileOpen(HWND hwnd);
+void DoFileSave(HWND hwnd);
+
 
 
 //step 4: the window procedure
@@ -27,6 +32,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
         hfDefault = GetStockObject(DEFAULT_GUI_FONT);
         SendMessage(hEdit, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
+
+
+        //menu
+        HMENU hMenu, hSubMenu;
+
+        hMenu = CreateMenu();
+        hSubMenu = CreatePopupMenu();
+
+        AppendMenu(hSubMenu, MF_STRING, ID_FILE_OPEN, "&Open");
+        AppendMenu(hSubMenu, MF_STRING, ID_FILE_NEW, "&New");
+        AppendMenu(hSubMenu, MF_STRING, ID_FILE_SAVEAS, "&Save As");
+        AppendMenu(hSubMenu, MF_STRING, ID_FILE_EXIT, "E&xit");
+        AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
+
+        SetMenu(hwnd, hMenu);
       }
     break;
     case WM_SIZE:
@@ -45,20 +65,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         case ID_FILE_EXIT:
           PostMessage(hwnd, WM_CLOSE, 0, 0);
         break;
-        case ID_STUFF_GO:
-          {// <-- making a variable in a switch statement we need the braces
-            char szFileName[MAX_PATH];
-            HINSTANCE hInstance = GetModuleHandle(NULL);
-
-            GetModuleFileName(hInstance, szFileName, MAX_PATH);
-            MessageBox(hwnd, szFileName, "This Program is:", MB_OK | MB_ICONINFORMATION);
-          }
+        case ID_FILE_NEW:
+          SetDlgItemText(hwnd, IDC_MAIN_EDIT, "");
         break;
-        case ID_WINDOW_SHOW:
-          ShowWindow(g_hToolbar, SW_SHOW);
+        case ID_FILE_OPEN:
+          DoFileOpen(hwnd);
         break;
-        case ID_WINDOW_HIDE:
-          ShowWindow(g_hToolbar, SW_HIDE);
+        case ID_FILE_SAVEAS:
+          DoFileSave(hwnd);
         break;
       }
     break;
@@ -128,35 +142,117 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 
+BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName)
+{
+    HANDLE hFile;
+    BOOL bSuccess = FALSE;
 
+    hFile = CreateFile(pszFileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+        OPEN_EXISTING, 0, NULL);
+    if(hFile != INVALID_HANDLE_VALUE)
+    {
+        DWORD dwFileSize;
 
+        dwFileSize = GetFileSize(hFile, NULL);
+        if(dwFileSize != 0xFFFFFFFF)
+        {
+            LPSTR pszFileText;
 
-BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName){
-  HANDLE hFile;
-  BOOL BSuccess = FALSE;
+            pszFileText = GlobalAlloc(GPTR, dwFileSize + 1);
+            if(pszFileText != NULL)
+            {
+                DWORD dwRead;
 
-  hFile = CreateFile(pszFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-
-  if (hFile != INVALID_HANDLE_VALUE){
-    DWORD dwFileSize;
-
-    dwFileSize = GetFileSize(hFile, NULL);
-    if(dwFileSize != 0xFFFFFFFF){
-      LPSTR pszFileText;
-      pszFileText = GlobalAlloc(GPTR, dwFileSize + 1);
-
-      if(pszFileText != NULL){
-        DWORD dwRead;
-
-        if(ReadFile(hFile, pszFileText, dwFileSize, &dwRead, NULL)){
-          pszFileText[dwFileSize] = 0; // add null terminator
-          if(setWindowText(hEdit, pszFileText))
-            BSuccess = TRUE;
+                if(ReadFile(hFile, pszFileText, dwFileSize, &dwRead, NULL))
+                {
+                    pszFileText[dwFileSize] = 0; // Add null terminator
+                    if(SetWindowText(hEdit, pszFileText))
+                        bSuccess = TRUE; // It worked!
+                }
+                GlobalFree(pszFileText);
+            }
         }
-        GlobalFree(pszFileText);
-      }
+        CloseHandle(hFile);
     }
-    CloseHandle(hFile);
+    return bSuccess;
+}
+
+
+BOOL SaveTextFileFromEdit(HWND hEdit, LPCTSTR pszFileName)
+{
+    HANDLE hFile;
+    BOOL bSuccess = FALSE;
+
+    hFile = CreateFile(pszFileName, GENERIC_WRITE, 0, NULL,
+        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if(hFile != INVALID_HANDLE_VALUE)
+    {
+        DWORD dwTextLength;
+
+        dwTextLength = GetWindowTextLength(hEdit);
+        // No need to bother if there's no text.
+        if(dwTextLength > 0)
+        {
+            LPSTR pszText;
+            DWORD dwBufferSize = dwTextLength + 1;
+
+            pszText = GlobalAlloc(GPTR, dwBufferSize);
+            if(pszText != NULL)
+            {
+                if(GetWindowText(hEdit, pszText, dwBufferSize))
+                {
+                    DWORD dwWritten;
+
+                    if(WriteFile(hFile, pszText, dwTextLength, &dwWritten, NULL))
+                        bSuccess = TRUE;
+                }
+                GlobalFree(pszText);
+            }
+        }
+        CloseHandle(hFile);
+    }
+    return bSuccess;
+}
+
+void DoFileOpen(HWND hwnd){
+  OPENFILENAME ofn;
+  char szFileName[MAX_PATH] = "";
+
+  ZeroMemory(&ofn, sizeof(ofn));
+
+  ofn.lStructSize = sizeof(ofn); // SEE NOTE BELOW
+  ofn.hwndOwner = hwnd;
+  ofn.lpstrFilter = "Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
+  ofn.lpstrFile = szFileName;
+  ofn.nMaxFile = MAX_PATH;
+  ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+  ofn.lpstrDefExt = "txt";
+
+  if(GetOpenFileName(&ofn))
+  {
+      HWND hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
+      LoadTextFileToEdit(hEdit, szFileName);
   }
-  return BSuccess;
+}
+
+
+void DoFileSave(HWND hwnd){
+  OPENFILENAME ofn;
+  char szFileName[MAX_PATH] = "";
+
+  ZeroMemory(&ofn, sizeof(ofn));
+
+  ofn.lStructSize = sizeof(ofn); // SEE NOTE BELOW
+  ofn.hwndOwner = hwnd;
+  ofn.lpstrFilter = "Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
+  ofn.lpstrFile = szFileName;
+  ofn.nMaxFile = MAX_PATH;
+  ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+  ofn.lpstrDefExt = "txt";
+
+  if(GetOpenFileName(&ofn))
+  {
+      HWND hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
+      SaveTextFileFromEdit(hEdit, szFileName);
+  }
 }
