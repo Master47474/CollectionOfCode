@@ -1,4 +1,4 @@
-
+// To Run gcc -Wall -mwindows "file" -o main.exe
 #include <windows.h>
 #include "Resource.h"
 
@@ -125,4 +125,38 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   return Msg.wParam;
 
+}
+
+
+
+
+
+BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName){
+  HANDLE hFile;
+  BOOL BSuccess = FALSE;
+
+  hFile = CreateFile(pszFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+
+  if (hFile != INVALID_HANDLE_VALUE){
+    DWORD dwFileSize;
+
+    dwFileSize = GetFileSize(hFile, NULL);
+    if(dwFileSize != 0xFFFFFFFF){
+      LPSTR pszFileText;
+      pszFileText = GlobalAlloc(GPTR, dwFileSize + 1);
+
+      if(pszFileText != NULL){
+        DWORD dwRead;
+
+        if(ReadFile(hFile, pszFileText, dwFileSize, &dwRead, NULL)){
+          pszFileText[dwFileSize] = 0; // add null terminator
+          if(setWindowText(hEdit, pszFileText))
+            BSuccess = TRUE;
+        }
+        GlobalFree(pszFileText);
+      }
+    }
+    CloseHandle(hFile);
+  }
+  return BSuccess;
 }
