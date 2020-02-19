@@ -1,5 +1,6 @@
 // To Run gcc -Wall -mwindows "file" -o main.exe
 #include <windows.h>
+#include <commctrl.h>
 #include "Resource.h"
 
 
@@ -22,7 +23,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     // do this with in rescources next
       {
         HFONT hfDefault;
-        HWND hEdit;
+        HWND hEdit, hTool;
+        TBBUTTON tbb[3];
+        TBADDBITMAP tbab;
+
+        HWND hStatus;
+        int statwidths[] = {100, -1};
 
         hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "",
             WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
@@ -47,17 +53,81 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
 
         SetMenu(hwnd, hMenu);
+
+        // create toolbar
+        hTool = CreateWindowEx(0, TOOLBARCLASSNAME, NULL, WS_CHILD | WS_VISIBLE, 0,0,0,0, hwnd, (HMENU)IDC_MAIN_TOOL, GetModuleHandle(NULL), NULL);
+        if(hTool == NULL)
+          MessageBox(hwnd, "Could not create tool bar", "Error", MB_OK | MB_ICONERROR);
+
+        //send the tb message
+        SendMessage(hTool, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0);
+
+        tbab.hInst = HINST_COMMCTRL;
+        tbab.nID = IDB_STD_SMALL_COLOR;
+        SendMessage(hTool, TB_ADDBITMAP, 0, (LPARAM)&tbab);
+
+        ZeroMemory(tbb, sizeof(tbb));
+        tbb[0].iBitmap = STD_FILENEW;
+        tbb[0].fsState = TBSTATE_ENABLED;
+        tbb[0].fsStyle = TBSTYLE_BUTTON;
+        tbb[0].idCommand = ID_FILE_NEW;
+
+        tbb[1].iBitmap = STD_FILEOPEN;
+        tbb[1].fsState = TBSTATE_ENABLED;
+        tbb[1].fsStyle = TBSTYLE_BUTTON;
+        tbb[1].idCommand = ID_FILE_OPEN;
+
+        tbb[2].iBitmap = STD_FILESAVE;
+        tbb[2].fsState = TBSTATE_ENABLED;
+        tbb[2].fsStyle = TBSTYLE_BUTTON;
+        tbb[2].idCommand = ID_FILE_SAVEAS;
+
+        SendMessage(hTool, TB_ADDBUTTONS, sizeof(tbb)/sizeof(TBBUTTON), (LPARAM)&tbb);
+
+        //create status bar
+        hStatus = CreateWindowEx(0, STATUSCLASSNAME, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, 0,0,0,0 ,hwnd, (HMENU)IDC_MAIN_STATUS, GetModuleHandle(NULL), NULL);
+
+        SendMessage(hStatus, SB_SETPARTS, sizeof(statwidths)/sizeof(int), (LPARAM)statwidths);
+        SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)"He there :");
+
       }
     break;
     case WM_SIZE:
     {
+        HWND hTool;
+        RECT rcTool;
+        int iToolHeight;
+
+        HWND hStatus;
+        RECT rcStatus;
+        int iStatusHeight;
+
         HWND hEdit;
         RECT rcClient;
+        int iEditHeight;
 
+        //size toolbar and get height
+        hTool = GetDlgItem(hwnd, IDC_MAIN_TOOL);
+        SendMessage(hTool, TB_AUTOSIZE, 0, 0);
+
+        GetWindowRect(hTool, &rcTool);
+        iToolHeight = rcTool.bottom - rcTool.top;
+
+
+        //size status bar and get height
+        hStatus = GetDlgItem(hwnd, IDC_MAIN_STATUS);
+        SendMessage(hStatus, WM_SIZE, 0, 0);
+
+        GetWindowRect(hStatus, &rcStatus);
+        iStatusHeight = rcStatus.bottom - rcStatus.top;
+
+
+        // do the rest
         GetClientRect(hwnd, &rcClient);
+        iEditHeight = rcClient.bottom - iToolHeight - iStatusHeight;
 
         hEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
-        SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom, SWP_NOZORDER);
+        SetWindowPos(hEdit, NULL, 0, iToolHeight, rcClient.right, iEditHeight, SWP_NOZORDER);
     }
     break;
     case WM_COMMAND:
