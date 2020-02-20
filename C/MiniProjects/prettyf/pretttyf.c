@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #define MAX_LINE_SIZE 1024
+#define MAX_TOKENS 15
 
 typedef enum TextColour{
   TC_ERROR = -1,
@@ -92,7 +93,8 @@ void prettyf(char output[]){
   char** tokens = tokenize(output);
   int n = 0;
   //10 is max tokens per line
-  for(n = 0; n < 10; ++n){
+  for(n = 0; n < MAX_TOKENS; ++n){
+    printf("- %d \n", n);
     if(tokens[n][0] == '\0'){
       break;
     }
@@ -111,7 +113,7 @@ void prettyf(char output[]){
 char** tokenize(char* output){
 
   // MAX 5 Colour Changes // max sentance length is 1024 chars
-  char** tokens = malloc(10 * sizeof(char*));
+  char** tokens = malloc(MAX_TOKENS * sizeof(char*));
 
   char ColToken[] = "-[";
   int n = sizeof(ColToken)/sizeof(char); // should be 2
