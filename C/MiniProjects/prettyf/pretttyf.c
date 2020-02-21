@@ -94,7 +94,6 @@ void prettyf(char output[]){
   int n = 0;
   //10 is max tokens per line
   for(n = 0; n < MAX_TOKENS; ++n){
-    printf("- %d \n", n);
     if(tokens[n][0] == '\0'){
       break;
     }
