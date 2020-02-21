@@ -113,7 +113,7 @@ void prettyf(char output[]){
 char** tokenize(char* output){
 
   // MAX 5 Colour Changes // max sentance length is 1024 chars
-  char** tokens = malloc(MAX_TOKENS * sizeof(char*));
+  char** tokens = (char**)malloc(MAX_TOKENS * sizeof(char*));
 
   char ColToken[] = "-[";
   int n = sizeof(ColToken)/sizeof(char); // should be 2
@@ -134,7 +134,7 @@ char** tokenize(char* output){
           tempi -= 2;
           temptext[tempi] = '\0';
           if(tempi != 0){ // if there was something before this
-            tokens[bigi] = malloc(tempi * sizeof(char));
+            tokens[bigi] = (char*)malloc(tempi * sizeof(char)+1);
             strcpy(tokens[bigi++],temptext);
           }
 
@@ -144,7 +144,7 @@ char** tokenize(char* output){
             temptext[tempi++] = c;
           }
           temptext[tempi] = '\0';
-          tokens[bigi] = malloc(tempi * sizeof(char));
+          tokens[bigi] = (char*)malloc(tempi * sizeof(char)+1);
           strcpy(tokens[bigi++],temptext);
           tempi = 0;
         }
@@ -154,13 +154,13 @@ char** tokenize(char* output){
   }
 
   temptext[tempi] = '\0';
-  tokens[bigi] = malloc(tempi * sizeof(char));
+  tokens[bigi] = (char*)malloc(tempi * sizeof(char)+1);
   strcpy(tokens[bigi++],temptext);
 
   //add null char to end of tokens
-  tempi = '\0';
+  tempi = 0;
   temptext[tempi] = '\0';
-  tokens[bigi] = malloc(tempi * sizeof(char));
+  tokens[bigi] = (char*)malloc(sizeof(char)); //always one char
   strcpy(tokens[bigi++],temptext);
 
   return tokens;
