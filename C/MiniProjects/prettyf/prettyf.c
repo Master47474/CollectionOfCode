@@ -59,7 +59,7 @@ char** tokenize(char* output);
 TextColour str2enum(const char* str);
 
 
-
+/*
 int main(){
   while(1){
     printf("What would you like to print >> ");
@@ -77,7 +77,7 @@ int main(){
 
   return EXIT_SUCCESS;
 }
-
+*/
 
 void setTextColour(FILE* stream, TextColour colour){
   int outfd = fileno(stream);
