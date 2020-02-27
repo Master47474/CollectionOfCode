@@ -2,17 +2,13 @@
 #include <stdlib.h>
 
 #define INPUTBUFSIZE 1048
-<<<<<<< HEAD
 
 #define DIGITS "0123456789"
-=======
->>>>>>> parent of b4b3e6f... Can Detect Operation and Letters in input
 
 
 char* captureInput(void);
 void printDebug(char* string);
 
-<<<<<<< HEAD
 typedef enum OperationsPrec{
 	EXPONENTIAL = 0,
        	MULTIPLICATION = 1,
@@ -29,8 +25,7 @@ const static struct{
 }
 
 
-=======
->>>>>>> parent of b4b3e6f... Can Detect Operation and Letters in input
+
 
 int main(void){
 
@@ -64,7 +59,6 @@ char* captureInput(void){
 			input[pos++] = '\0';
 			return input;
 		}else{
-<<<<<<< HEAD
 			if(anOperation(input[pos]) || aParenthisis(input[pos])){
 				// do something
 			}else if(isDigit(input[pos]) || c == '.'){
@@ -81,7 +75,6 @@ char* captureInput(void){
 			input[pos++] = c;
 		}
 
-=======
 			if(anOperation(input[pos++]))
 			       //do something that would be like adding it to input
 			//else if it is a digit add it do a string
@@ -89,7 +82,6 @@ char* captureInput(void){
 			input[pos++] = c;
 		}
 
->>>>>>> parent of b4b3e6f... Can Detect Operation and Letters in input
 		if(pos >= bufsize){
 			bufsize += INPUTBUFSIZE;
 			input = realloc(input, bufsize);
