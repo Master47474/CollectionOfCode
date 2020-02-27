@@ -18,7 +18,7 @@ typedef enum OperationsPrec{
        	MULTIPLICATION = 1,
        	DIVISION = 1,
        	ADDITION = 2,
-	SUBTRACTION = 2 
+	SUBTRACTION = 2
 }
 
 
@@ -35,12 +35,12 @@ const static struct{
 int main(void){
 
 	char* input;
-	
-	input = captureInput();	
-	
+
+	input = captureInput();
+
 	printDebug(input);
 
-	
+
 	return EXIT_SUCCESS;
 }
 
@@ -58,7 +58,7 @@ char* captureInput(void){
 
 	while(1){
 		c = getchar();
-		
+
 		if(c == ' ') continue;
 		if(c == EOF || c == '\n'){
 			input[pos++] = '\0';
@@ -66,14 +66,21 @@ char* captureInput(void){
 		}else{
 <<<<<<< HEAD
 			if(anOperation(input[pos]) || aParenthisis(input[pos])){
-				// do something 	
+				// do something
 			}else if(isDigit(input[pos]) || c == '.'){
 				//append to placeholder string for floats
 			}
-			
+
 		}
 		pos++;
-		
+
+			if(anOperation(input[pos++]))
+			       //do something that would be like adding it to input
+			//else if it is a digit add it do a string
+			//
+			input[pos++] = c;
+		}
+
 =======
 			if(anOperation(input[pos++]))
 			       //do something that would be like adding it to input
@@ -103,21 +110,3 @@ void printDebug(char* string){
 		printf("\"%c\", ",string[i++]);
 	printf("}\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
