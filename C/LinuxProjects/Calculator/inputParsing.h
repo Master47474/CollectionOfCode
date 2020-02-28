@@ -8,3 +8,5 @@
 
 
 #define BRACKETS "()[]{}"
+#define OPENBRACKET "([{"
+#define ENDBRACKET ")]}"

@@ -42,9 +42,14 @@ int GetInputIdentifier(char c);
 int isLetter(const int letter);
 int isBracket(const int bracket);
 int isDigit(const int digit);
+int isActualEndBracket(const int openBracket, const int closeBracket);
+int isEndBracket(const int bracket);
+int isOpenBracket(const int bracket);
 
+	
 
-
+	
+	
 // main
 
 int main(void){
@@ -66,23 +71,31 @@ char* captureInput(void){
 	int pos = 0;
 	char* input = malloc(sizeof(char) * bufsize);
 	int c;
-	char* tempFloatString;
+	//char* tempFloatString = malloc(sizeof(char) * bufsize);
+	//int tempFloatPos = 0;
+	char* BracketChecking = malloc(sizeof(char) * bufsize);
+	int BracketCheckingPos = 0;
 
 	if(!input){
 		printf("Allocation Error\n");
 		exit(EXIT_FAILURE);
 	}
 
+	if(!BracketChecking){
+		printf("Allocation Error\n");
+		exit(EXIT_FAILURE);
+	}
+
 	while(1){
 		c = getchar();
+		// printf("Tokenizing \"%c\"\n", c);
 		switch(GetInputIdentifier(c)){
 			case INPUT_ERROR:
-				printf("Error Parsing char \"%c\"", c);
+				printf("Error Tokenizing char \"%c\"", c);
 			break;
 			case INPUT_END:
 				input[pos++] = '\0';
 				return input;
-				break;
 			break;
 			case INPUT_SPACE:
 				continue;
@@ -99,20 +112,30 @@ char* captureInput(void){
 				input[pos] = c;	
 			break;
 			case INPUT_BRACKET:
+			{
 				input[pos] = c;
-				//need to fill this in
+				//assume BracketChecking never reaches its max allocation size
+				//check that bracket that was added is valid
+				//check if opening bracket first
+				if(isOpenBracket(c)){
+					BracketChecking[BracketCheckingPos++] = c;
+					break;
+				}
+				if(BracketCheckingPos == 0 && isEndBracket(c)){
+					printf("Syntax Error No Opening Corresponding Bracket\n");
+					return input;
+				}
+				if(!(isActualEndBracket(BracketChecking[BracketCheckingPos-1] ,c))){
+					printf("Doesnt Correspond ti opening Bracket Error\n");
+					return input;	
+				}else{ // then is is an actual end bracket
+					BracketCheckingPos--;
+				}
+			}
 			break;
 			default:
 				continue;
-		}	
-		
-		/*
-		if(isOperation(c) ){//|| aParenthisis(input[pos])){
-				input[pos] = c;
-				printf("%c ,", c);// do something 	
-			}//else if(isDigit(input[pos]) || c == '.'){
-				//append to placeholder string for for temp
-		*/
+		}
 		
 		if(pos >= bufsize){
 			bufsize += INPUTBUFSIZE;
@@ -124,6 +147,9 @@ char* captureInput(void){
 		}
 		pos++;
 	}
+
+	//free(tempFloatString);
+	free(BracketChecking);
 	return input;
 }
 
@@ -172,7 +198,6 @@ int isBracket(const int bracket){
 	return FALSE;
 }
 
-
 int GetInputIdentifier(char c){
 	if(c == ' ') return INPUT_SPACE;
 	if(isLetter(c)) return INPUT_CHAR;
@@ -184,7 +209,42 @@ int GetInputIdentifier(char c){
 	return INPUT_ERROR;
 }
 
+int isEndBracket(const int bracket){
+	for(int i = 0; i < sizeof(ENDBRACKET)/sizeof(char); ++i)
+		if(bracket == ENDBRACKET[i])
+			return TRUE;
+	return FALSE;
+}
 
+int isOpenBracket(const int bracket){
+	for(int i = 0; i < sizeof(OPENBRACKET)/sizeof(char); ++i)
+		if(bracket == OPENBRACKET[i])
+			return TRUE;
+	return FALSE;
+}
+
+
+int isActualEndBracket(const int openBracket, const int closeBracket){
+	switch(closeBracket){
+		case ')':
+			if(openBracket == '(')
+				return TRUE;
+			return FALSE;
+		break;
+		case ']':
+			if(openBracket == '[')
+				return TRUE;
+			return FALSE;
+		break;
+		case '}':
+			if(openBracket == '{')
+				return TRUE;
+			return FALSE;
+		break;
+		default:
+			return FALSE;
+	}
+}
 
 
 
