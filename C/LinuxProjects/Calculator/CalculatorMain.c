@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "inputParsing.h"
+
 #define INPUTBUFSIZE 1048
 #define TRUE 1
 #define FALSE 0
 
 
-#define DIGITS "0123456789"
 
 
 char* captureInput(void);
@@ -33,13 +34,14 @@ const static struct{
 	{SUBTRACTION, '-'},
 };
 
+//identify function declarations
 OperationsPrec operation2Enum(const int symbol);
 int isOperation(const int symbol);
 
-//misc function declarations
+int GetInputIdentifier(char c);
 int isLetter(const int letter);
-
-
+int isBracket(const int bracket);
+int isDigit(const int digit);
 
 
 
@@ -49,8 +51,8 @@ int main(void){
 
 	char* input;
 	
-	input = captureInput();	
-	
+	input = captureInput();		
+
 	printDebug(input);
 
 	
@@ -73,22 +75,44 @@ char* captureInput(void){
 
 	while(1){
 		c = getchar();
+		switch(GetInputIdentifier(c)){
+			case INPUT_ERROR:
+				printf("Error Parsing char \"%c\"", c);
+			break;
+			case INPUT_END:
+				input[pos++] = '\0';
+				return input;
+				break;
+			break;
+			case INPUT_SPACE:
+				continue;
+			break;
+			case INPUT_CHAR:
+				continue;
+				//fill this in
+			break;
+			case INPUT_DIGIT:
+				input[pos] = c;
+				// fill this in
+			break;
+			case INPUT_OPERATION:
+				input[pos] = c;	
+			break;
+			case INPUT_BRACKET:
+				input[pos] = c;
+				//need to fill this in
+			break;
+			default:
+				continue;
+		}	
 		
-		if(c == ' ') continue;
-		if(isLetter(c)) continue;
-		if(c == EOF || c == '\n'){
-			input[pos++] = '\0';
-			return input;
-		}else{
-			if(isOperation(c) ){//|| aParenthisis(input[pos])){
+		/*
+		if(isOperation(c) ){//|| aParenthisis(input[pos])){
 				input[pos] = c;
 				printf("%c ,", c);// do something 	
 			}//else if(isDigit(input[pos]) || c == '.'){
-				//append to placeholder string for floats
-			//}
-			
-		}
-
+				//append to placeholder string for for temp
+		*/
 		
 		if(pos >= bufsize){
 			bufsize += INPUTBUFSIZE;
@@ -135,7 +159,30 @@ int isLetter(const int letter){
 	return FALSE;
 }
 
+int isDigit(const int digit){
+	if(digit >= '0' && digit <= '9')
+		return TRUE;
+	return FALSE;
+}
 
+int isBracket(const int bracket){
+	for(int i = 0; i < sizeof(BRACKETS)/sizeof(char); ++i)
+		if(bracket == BRACKETS[i])
+			return TRUE;
+	return FALSE;
+}
+
+
+int GetInputIdentifier(char c){
+	if(c == ' ') return INPUT_SPACE;
+	if(isLetter(c)) return INPUT_CHAR;
+	if(c == EOF || c == '\n') return INPUT_END;
+	if(isOperation(c)) return INPUT_OPERATION;
+	if(isDigit(c)) return INPUT_DIGIT;
+	if(isBracket(c)) return INPUT_BRACKET;
+
+	return INPUT_ERROR;
+}
 
 
 
