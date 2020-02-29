@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #include "inputParsing.h"
+#include "Math/Solving.h"
+
 
 #define INPUTBUFSIZE 1048
 #define TRUE 1
@@ -60,7 +62,7 @@ int main(void){
 
 	printDebug(input);
 
-	
+	// testing printf("%d\n" , exponent(3,3));
 	return EXIT_SUCCESS;
 }
 
@@ -107,6 +109,7 @@ char* captureInput(void){
 			case INPUT_DIGIT:
 				input[pos] = c;
 				// fill this in
+				// only supports integers for now
 			break;
 			case INPUT_OPERATION:
 				input[pos] = c;	
