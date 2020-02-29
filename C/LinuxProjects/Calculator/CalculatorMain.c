@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "inputParsing.h"
 #include "Math/Solving.h"
@@ -13,8 +12,8 @@
 
 
 
-char** captureInput(void);
-void printDebug(char** string);
+char* captureInput(void);
+void printDebug(char* string);
 
 // operation functions and enums
 typedef enum OperationsPrec{
@@ -57,8 +56,11 @@ int isOpenBracket(const int bracket);
 
 int main(void){
 
+	char* input;
 	
-	printDebug(captureInput());		
+	input = captureInput();		
+
+	printDebug(input);
 
 	// testing printf("%d\n" , exponent(3,3));
 	return EXIT_SUCCESS;
@@ -66,13 +68,13 @@ int main(void){
 
 // redo capture input
 // only works with Ints no floats as of yet
-char** captureInput(void){
+char* captureInput(void){
 	int bufsize = INPUTBUFSIZE;
 	int pos = 0;
-	char** input = malloc(sizeof(char) * bufsize);
+	char* input = malloc(sizeof(char) * bufsize);
 	int c;
-	char* tempFloatString = malloc(sizeof(char) * bufsize);
-	int tempFloatPos = 0;
+	//char* tempFloatString = malloc(sizeof(char) * bufsize);
+	//int tempFloatPos = 0;
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
 
@@ -94,8 +96,7 @@ char** captureInput(void){
 				printf("Error Tokenizing char \"%c\"", c);
 			break;
 			case INPUT_END:
-				input[pos] = malloc(sizeof(char));
-				input[pos] = '\0';
+				input[pos++] = '\0';
 				return input;
 			break;
 			case INPUT_SPACE:
@@ -106,31 +107,16 @@ char** captureInput(void){
 				//fill this in
 			break;
 			case INPUT_DIGIT:
-				tempFloatString[tempFloatPos++] = c;
-				pos--; // as it is going to be put back up
+				input[pos] = c;
 				// fill this in
 				// only supports integers for now
 			break;
 			case INPUT_OPERATION:
-			{
-				if(tempFloatPos != 0){
-					input[pos] = malloc(sizeof(char) * (tempFloatPos+1));
-					strcpy(input[pos++], tempFloatString);
-					tempFloatPos = 0;
-					free(tempFloatString);
-					char* tempFloatString = malloc(sizeof(char) * bufsize);
-				}
-				input[pos] = malloc(sizeof(char) * 2);
-				char temp[] = {c, '\0'};
-				strcpy(input[pos], temp);	
-			}
+				input[pos] = c;	
 			break;
 			case INPUT_BRACKET:
 			{
-				input[pos] = malloc(sizeof(char) * 2);
-				char temp[] = {c, '\0'};
-				strcpy(input[pos], temp);
-				
+				input[pos] = c;
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
 				//check if opening bracket first
@@ -165,23 +151,17 @@ char** captureInput(void){
 		pos++;
 	}
 
-	free(tempFloatString);
+	//free(tempFloatString);
 	free(BracketChecking);
 	return input;
 }
 
 
-void printDebug(char** string){
+void printDebug(char* string){
 	int i = 0;
-	int j = 0;
 	printf("{");
-	while(string[i][j] != '\0'){//j always 0 here
-		printf("\"");
-		while(string[i][j] != '\0')
-			printf("%c", string[i][j++]);
-		i++;
-	}
-		printf("\", ");
+	while(string[i] != '\0')
+		printf("\"%c\", ",string[i++]);
 	printf("}\n");
 }
 
