@@ -1,17 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "inputParsing.h"
 
 #define INPUTBUFSIZE 1048
+#define INPUTWORDBUFSIZE 256
 #define TRUE 1
 #define FALSE 0
 
 
 
 
-char* captureInput(void);
-void printDebug(char* string);
+char** captureInput(void);
+void printDebug(char** string);
 
 // operation functions and enums
 typedef enum OperationsPrec{
@@ -54,11 +56,7 @@ int isOpenBracket(const int bracket);
 
 int main(void){
 
-	char* input;
-	
-	input = captureInput();		
-
-	printDebug(input);
+	printDebug(captureInput());		
 
 	
 	return EXIT_SUCCESS;
@@ -66,22 +64,17 @@ int main(void){
 
 // redo capture input
 // only works with Ints no floats as of yet
-char* captureInput(void){
+char** captureInput(void){
 	int bufsize = INPUTBUFSIZE;
 	int pos = 0;
-	char* input = malloc(sizeof(char) * bufsize);
+	char** input = (char**)malloc(sizeof(char*) * bufsize);
 	int c;
-	//char* tempFloatString = malloc(sizeof(char) * bufsize);
-	//int tempFloatPos = 0;
+	char* tempString = malloc(sizeof(char) * bufsize);
+	int tempPos = 0;
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
 
-	if(!input){
-		printf("Allocation Error\n");
-		exit(EXIT_FAILURE);
-	}
-
-	if(!BracketChecking){
+	if(!input || !tempString || !BracketChecking){
 		printf("Allocation Error\n");
 		exit(EXIT_FAILURE);
 	}
@@ -94,8 +87,18 @@ char* captureInput(void){
 				printf("Error Tokenizing char \"%c\"", c);
 			break;
 			case INPUT_END:
-				input[pos++] = '\0';
+			{
+				if(tempPos != 0){
+					tempString[tempPos++] = '\0';
+					input[pos] = (char*)malloc(sizeof(char) * tempPos);
+					strcpy(input[pos++], tempString);
+					tempPos = 0;
+				}
+				tempString[0] = '\0';
+				input[pos] = (char*)malloc(sizeof(char));
+				strcpy(input[pos], tempString);	
 				return input;
+			}		
 			break;
 			case INPUT_SPACE:
 				continue;
@@ -105,15 +108,37 @@ char* captureInput(void){
 				//fill this in
 			break;
 			case INPUT_DIGIT:
-				input[pos] = c;
+				tempString[tempPos++] = c;
+				pos--;
 				// fill this in
 			break;
 			case INPUT_OPERATION:
-				input[pos] = c;	
+			{
+				if(tempPos != 0){
+					tempString[tempPos++] = '\0';
+					input[pos] = (char*)malloc(sizeof(char) * tempPos);
+					strcpy(input[pos++], tempString);
+					tempPos = 0;
+				}
+				tempString[0] = c;
+				tempString[1] = '\0';
+				input[pos] = (char*)malloc(sizeof(char) * 4);
+				strcpy(input[pos], tempString);	
+			}					
 			break;
 			case INPUT_BRACKET:
 			{
-				input[pos] = c;
+				if(tempPos != 0){
+					tempString[tempPos++] = '\0';
+					input[pos] = (char*)malloc(sizeof(char) * tempPos);
+					strcpy(input[pos++], tempString);
+					tempPos = 0;
+				}
+				tempString[0] = c;
+				tempString[1] = '\0';
+				input[pos] = (char*)malloc(sizeof(char) * 4);
+				strcpy(input[pos], tempString);	
+
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
 				//check if opening bracket first
@@ -148,17 +173,17 @@ char* captureInput(void){
 		pos++;
 	}
 
-	//free(tempFloatString);
+	free(tempString);
 	free(BracketChecking);
 	return input;
 }
 
 
-void printDebug(char* string){
+void printDebug(char** string){
 	int i = 0;
 	printf("{");
-	while(string[i] != '\0')
-		printf("\"%c\", ",string[i++]);
+	while(strcmp(string[i], "\0"))
+		printf("\"%s\", ",string[i++]);
 	printf("}\n");
 }
 
