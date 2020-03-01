@@ -48,6 +48,7 @@ int isActualEndBracket(const int openBracket, const int closeBracket);
 int isEndBracket(const int bracket);
 int isOpenBracket(const int bracket);
 
+void appendNumber(char** string, int* posi, char* temp, int* tempi);
 	
 
 	
@@ -89,10 +90,7 @@ char** captureInput(void){
 			case INPUT_END:
 			{
 				if(tempPos != 0){
-					tempString[tempPos++] = '\0';
-					input[pos] = (char*)malloc(sizeof(char) * tempPos);
-					strcpy(input[pos++], tempString);
-					tempPos = 0;
+					appendNumber(input, &pos, tempString, &tempPos);
 				}
 				tempString[0] = '\0';
 				input[pos] = (char*)malloc(sizeof(char));
@@ -115,10 +113,7 @@ char** captureInput(void){
 			case INPUT_OPERATION:
 			{
 				if(tempPos != 0){
-					tempString[tempPos++] = '\0';
-					input[pos] = (char*)malloc(sizeof(char) * tempPos);
-					strcpy(input[pos++], tempString);
-					tempPos = 0;
+					appendNumber(input, &pos, tempString, &tempPos);
 				}
 				tempString[0] = c;
 				tempString[1] = '\0';
@@ -129,10 +124,7 @@ char** captureInput(void){
 			case INPUT_BRACKET:
 			{
 				if(tempPos != 0){
-					tempString[tempPos++] = '\0';
-					input[pos] = (char*)malloc(sizeof(char) * tempPos);
-					strcpy(input[pos++], tempString);
-					tempPos = 0;
+					appendNumber(input, &pos, tempString, &tempPos);
 				}
 				tempString[0] = c;
 				tempString[1] = '\0';
@@ -273,4 +265,9 @@ int isActualEndBracket(const int openBracket, const int closeBracket){
 
 
 
-
+void appendNumber(char** string, int* posi, char* temp, int* tempi){
+	temp[(*tempi)++] = '\0';
+	string[*posi] = (char*)malloc(sizeof(char) * (*tempi));
+	strcpy(string[(*posi)++], temp);
+	*tempi = 0;
+}					
