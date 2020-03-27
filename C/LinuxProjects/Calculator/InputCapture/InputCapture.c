@@ -2,18 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "inputParsing.h"
-
+//definitions
 #define INPUTBUFSIZE 1048
 #define INPUTWORDBUFSIZE 256
 #define TRUE 1
 #define FALSE 0
 
+//imports
+#include "../MainFiles/MathChars.h"
 
-
-
-char** captureInput(void);
-void printDebug(char** string);
 
 // operation functions and enums
 typedef enum OperationsPrec{
@@ -22,7 +19,7 @@ typedef enum OperationsPrec{
        	MULTIPLICATION = 1,
        	DIVISION = 1,
        	ADDITION = 2,
-	SUBTRACTION = 2 
+	SUBTRACTION = 2
 } OperationsPrec;
 
 const static struct{
@@ -36,10 +33,14 @@ const static struct{
 	{SUBTRACTION, '-'},
 };
 
+
+char** captureInput(void);
+
 //identify function declarations
 OperationsPrec operation2Enum(const int symbol);
 int isOperation(const int symbol);
 
+//input identifiers
 int GetInputIdentifier(char c);
 int isLetter(const int letter);
 int isBracket(const int bracket);
@@ -48,20 +49,10 @@ int isActualEndBracket(const int openBracket, const int closeBracket);
 int isEndBracket(const int bracket);
 int isOpenBracket(const int bracket);
 
+
+//appending to number
 void appendNumber(char** string, int* posi, char* temp, int* tempi);
-	
 
-	
-	
-// main
-
-int main(void){
-
-	printDebug(captureInput());		
-
-	
-	return EXIT_SUCCESS;
-}
 
 // redo capture input
 // only works with Ints no floats as of yet
@@ -94,9 +85,9 @@ char** captureInput(void){
 				}
 				tempString[0] = '\0';
 				input[pos] = (char*)malloc(sizeof(char));
-				strcpy(input[pos], tempString);	
+				strcpy(input[pos], tempString);
 				return input;
-			}		
+			}
 			break;
 			case INPUT_SPACE:
 				continue;
@@ -118,8 +109,8 @@ char** captureInput(void){
 				tempString[0] = c;
 				tempString[1] = '\0';
 				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);	
-			}					
+				strcpy(input[pos], tempString);
+			}
 			break;
 			case INPUT_BRACKET:
 			{
@@ -129,7 +120,7 @@ char** captureInput(void){
 				tempString[0] = c;
 				tempString[1] = '\0';
 				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);	
+				strcpy(input[pos], tempString);
 
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
@@ -144,7 +135,7 @@ char** captureInput(void){
 				}
 				if(!(isActualEndBracket(BracketChecking[BracketCheckingPos-1] ,c))){
 					printf("Doesnt Correspond ti opening Bracket Error\n");
-					return input;	
+					return input;
 				}else{ // then is is an actual end bracket
 					BracketCheckingPos--;
 				}
@@ -153,7 +144,7 @@ char** captureInput(void){
 			default:
 				continue;
 		}
-		
+
 		if(pos >= bufsize){
 			bufsize += INPUTBUFSIZE;
 			input = realloc(input, bufsize);
@@ -171,13 +162,7 @@ char** captureInput(void){
 }
 
 
-void printDebug(char** string){
-	int i = 0;
-	printf("{");
-	while(strcmp(string[i], "\0"))
-		printf("\"%s\", ",string[i++]);
-	printf("}\n");
-}
+
 
 
 
@@ -270,4 +255,4 @@ void appendNumber(char** string, int* posi, char* temp, int* tempi){
 	string[*posi] = (char*)malloc(sizeof(char) * (*tempi));
 	strcpy(string[(*posi)++], temp);
 	*tempi = 0;
-}					
+}
