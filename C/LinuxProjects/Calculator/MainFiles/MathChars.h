@@ -10,3 +10,5 @@
 #define BRACKETS "()[]{}"
 #define OPENBRACKET "([{"
 #define ENDBRACKET ")]}"
+
+#define DECIMALPOINT '.'

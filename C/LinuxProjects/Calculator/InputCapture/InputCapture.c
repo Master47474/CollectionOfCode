@@ -65,6 +65,7 @@ char** captureInput(void){
 	int tempPos = 0;
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
+	int decimalNumber = FALSE;
 
 	if(!input || !tempString || !BracketChecking){
 		printf("Allocation Error\n");
@@ -81,6 +82,10 @@ char** captureInput(void){
 			case INPUT_END:
 			{
 				if(tempPos != 0){
+					if(decimalNumber == TRUE){
+						tempString[tempPos++] = 'f';
+						decimalNumber = FALSE;
+					}	
 					appendNumber(input, &pos, tempString, &tempPos);
 				}
 				tempString[0] = '\0';
@@ -97,6 +102,7 @@ char** captureInput(void){
 				//fill this in
 			break;
 			case INPUT_DIGIT:
+				if(c == DECIMALPOINT) decimalNumber = TRUE;
 				tempString[tempPos++] = c;
 				pos--;
 				// fill this in
@@ -104,6 +110,10 @@ char** captureInput(void){
 			case INPUT_OPERATION:
 			{
 				if(tempPos != 0){
+					if(decimalNumber == TRUE){
+						tempString[tempPos++] = 'f';
+						decimalNumber = FALSE;
+					}	
 					appendNumber(input, &pos, tempString, &tempPos);
 				}
 				tempString[0] = c;
@@ -115,6 +125,10 @@ char** captureInput(void){
 			case INPUT_BRACKET:
 			{
 				if(tempPos != 0){
+					if(decimalNumber == TRUE){
+						tempString[tempPos++] = 'f';
+						decimalNumber = FALSE;
+					}	
 					appendNumber(input, &pos, tempString, &tempPos);
 				}
 				tempString[0] = c;
@@ -205,7 +219,7 @@ int GetInputIdentifier(char c){
 	if(isLetter(c)) return INPUT_CHAR;
 	if(c == EOF || c == '\n') return INPUT_END;
 	if(isOperation(c)) return INPUT_OPERATION;
-	if(isDigit(c)) return INPUT_DIGIT;
+	if(isDigit(c) || c == DECIMALPOINT) return INPUT_DIGIT;
 	if(isBracket(c)) return INPUT_BRACKET;
 
 	return INPUT_ERROR;
