@@ -10,7 +10,7 @@
 
 //imports
 #include "../MainFiles/MathChars.h"
-
+#include "../InputTypes/inputNumber/h"
 
 // operation functions and enums
 typedef enum OperationsPrec{
@@ -66,6 +66,12 @@ char** captureInput(void){
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
 	int decimalNumber = FALSE;
+	char* alphaLetter = malloc(sizeof(char) * bufsize);
+	int alphanumeric = FALSE;
+
+	
+	
+
 
 	if(!input || !tempString || !BracketChecking){
 		printf("Allocation Error\n");
