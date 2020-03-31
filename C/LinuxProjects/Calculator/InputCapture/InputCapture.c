@@ -10,7 +10,11 @@
 
 //imports
 #include "../MainFiles/MathChars.h"
+<<<<<<< HEAD
 #include "../InputTypes/inputNumber.h"
+=======
+
+>>>>>>> parent of a826f78... about to start making the structs to the capture
 
 // operation functions and enums
 typedef enum OperationsPrec{
@@ -67,6 +71,7 @@ numtok** captureInput(void){
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
 	int decimalNumber = FALSE;
+<<<<<<< HEAD
 	char* alphaLetter = malloc(sizeof(char) * bufsize);
 	int alphanumeric = FALSE;
 
@@ -77,6 +82,8 @@ numtok** captureInput(void){
 	
 	
 
+=======
+>>>>>>> parent of a826f78... about to start making the structs to the capture
 
 	if(!input || !tempString || !BracketChecking){
 		printf("Allocation Error\n");

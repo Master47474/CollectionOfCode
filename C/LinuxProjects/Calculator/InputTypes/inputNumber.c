@@ -3,6 +3,7 @@
 
 
 
+<<<<<<< HEAD
 struct chartok{
 	char* id;
 	char* intvalue;
@@ -28,11 +29,24 @@ struct numtok{
 
 
 typedef struct numtok numtok;
+=======
+typedef struct numtok{
+	int integer;
+	float floatingpoint;
+	int boolFloat;
+	//type that can have infinite many chars so x y z or xyz
+	// linked list of chartoks	
+} numtok;
+>>>>>>> parent of a826f78... about to start making the structs to the capture
 
 
+struct value{
+	int integer;
+	float floatingpoint;
+	int boolFloat;
+}
 
-
-
-
-
-
+typedef struct chartok{
+	char* id[];
+	struct value idvalue;
+} chartok;
