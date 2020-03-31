@@ -10,7 +10,7 @@
 
 //imports
 #include "../MainFiles/MathChars.h"
-#include "../InputTypes/inputNumber/h"
+#include "../InputTypes/inputNumber.h"
 
 // operation functions and enums
 typedef enum OperationsPrec{
@@ -34,7 +34,7 @@ const static struct{
 };
 
 
-char** captureInput(void);
+numtok** captureInput(void);
 
 //identify function declarations
 OperationsPrec operation2Enum(const int symbol);
@@ -51,15 +51,16 @@ int isOpenBracket(const int bracket);
 
 
 //appending to number
-void appendNumber(char** string, int* posi, char* temp, int* tempi);
+void appendNumber(numtok** string, int* posi, char* temp, int* tempi, numtok* currentToken);
 
 
 // redo capture input
 // only works with Ints no floats as of yet
-char** captureInput(void){
+numtok** captureInput(void){
 	int bufsize = INPUTBUFSIZE;
 	int pos = 0;
-	char** input = (char**)malloc(sizeof(char*) * bufsize);
+	//char** input = (char**)malloc(sizeof(char*) * bufsize);
+	numtok** input = malloc(sizeof(numtok*) * bufsize);// [numtok, numtok, numtok, '\0']
 	int c;
 	char* tempString = malloc(sizeof(char) * bufsize);
 	int tempPos = 0;
@@ -69,6 +70,10 @@ char** captureInput(void){
 	char* alphaLetter = malloc(sizeof(char) * bufsize);
 	int alphanumeric = FALSE;
 
+	numtok* currentToken;
+       	currentToken = malloc(sizeof(numtok));
+	currentToken =	&numtok_default;
+	
 	
 	
 
@@ -89,14 +94,15 @@ char** captureInput(void){
 			{
 				if(tempPos != 0){
 					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
+						currentToken->boolfloat = TRUE;//tempString[tempPos++] = 'f';
 						decimalNumber = FALSE;
 					}	
-					appendNumber(input, &pos, tempString, &tempPos);
+					appendNumber(input, &pos, tempString, &tempPos, currentToken);
 				}
-				tempString[0] = '\0';
-				input[pos] = (char*)malloc(sizeof(char));
-				strcpy(input[pos], tempString);
+				numtok* currentToken = malloc(sizeof(numtok));
+				currentToken = &numtok_default;//tempString[0] = '\0';
+				input[pos] = malloc(sizeof(numtok*));
+				input[pos] = currentToken;
 				return input;
 			}
 			break;
@@ -117,30 +123,48 @@ char** captureInput(void){
 			{
 				if(tempPos != 0){
 					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
+						currentToken->boolfloat = TRUE;//tempString[tempPos++] = 'f';
 						decimalNumber = FALSE;
 					}	
-					appendNumber(input, &pos, tempString, &tempPos);
+					appendNumber(input, &pos, tempString, &tempPos, currentToken);
 				}
-				tempString[0] = c;
-				tempString[1] = '\0';
-				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);
+				numtok* currentToken = malloc(sizeof(numtok));
+				currentToken = &numtok_default;
+				currentToken->booloper = TRUE;
+				opertok operationtok;
+				operationtok.operid[0] = c;
+				operationtok.operid[1] = '\0';
+				currentToken->operation = operationtok;
+				//tempString[0] = c;
+				//tempString[1] = '\0';
+				//(char*)malloc(sizeof(char) * 4);
+				input[pos] = malloc(sizeof(numtok*));
+				input[pos] = currentToken;//strcpy(input[pos], tempString);
 			}
 			break;
 			case INPUT_BRACKET:
 			{
 				if(tempPos != 0){
 					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
+						currentToken->boolfloat = TRUE;//tempString[tempPos++] = 'f';
 						decimalNumber = FALSE;
 					}	
-					appendNumber(input, &pos, tempString, &tempPos);
+					appendNumber(input, &pos, tempString, &tempPos, currentToken);
 				}
-				tempString[0] = c;
-				tempString[1] = '\0';
-				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);
+				numtok* currentToken = malloc(sizeof(numtok));
+				currentToken = &numtok_default;
+				currentToken->booloper = TRUE;
+				opertok operationtok;
+				operationtok.operid = malloc(sizeof(char) * 4);
+				operationtok.operid[0] = c; 
+				operationtok.operid[1] = '\0';
+				currentToken->operation = operationtok;
+				//tempString[0] = c;
+				 //tempString[1] = '\0';
+				//(char*)malloc(sizeof(char) * 4);
+				input[pos] = malloc(sizeof(numtok*));
+				input[pos] = currentToken;//strcpy(input[pos], tempString);
+
 
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
@@ -270,9 +294,11 @@ int isActualEndBracket(const int openBracket, const int closeBracket){
 
 
 
-void appendNumber(char** string, int* posi, char* temp, int* tempi){
+void appendNumber(numtok** string, int* posi, char* temp, int* tempi, numtok* currentToken){
 	temp[(*tempi)++] = '\0';
-	string[*posi] = (char*)malloc(sizeof(char) * (*tempi));
-	strcpy(string[(*posi)++], temp);
+	currentToken->integer = malloc(sizeof(char) * (*tempi));
+	strcpy(currentToken->integer, temp);
+	string[(*posi)] = malloc(sizeof(numtok*));
+	string[(*posi)++] = currentToken;
 	*tempi = 0;
 }

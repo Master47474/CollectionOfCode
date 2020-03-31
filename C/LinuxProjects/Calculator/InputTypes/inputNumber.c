@@ -3,23 +3,31 @@
 
 
 
-typedef struct chartok{
+struct chartok{
 	char* id;
-	int intvalue;
-	float floatvalue;
+	char* intvalue;
+	char* floatvalue;
 	int boolfloat;
-} chartok;
+} chartok_default = {'\0', '\0', '\0', 0};
+typedef struct chartok chartok;
 
+typedef struct opertok{
+	char* operid;
+} opertok;
 
-
-
-typedef struct numtok{
-	int integer;
-	float floatingpoint;
-	int boolFloat;
+struct numtok{
+	char* integer; // make it an integer and flaoting point after testing with string first
+	char* floatingpoint;
+	int boolfloat;
 	chartok alphanumeric;		
 	int boolalpanumeric;
-} numtok;
+	opertok operation;
+	int booloper;
+	int boolbracket;
+} numtok_default = {'\0', '\0', 0, NULL, 0, NULL, 0, 0};
+
+
+typedef struct numtok numtok;
 
 
 

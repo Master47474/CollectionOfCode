@@ -7,12 +7,12 @@
 #include "../InputCapture/InputCapture.h"
 
 
-void printDebug(char** string);
+void printDebug(numtok** string);
 
 // main
 
 int main(void){
-
+	printf("LEts start\n");
 	printDebug(captureInput());
 
 
@@ -20,10 +20,10 @@ int main(void){
 }
 
 
-void printDebug(char** string){
+void printDebug(numtok** string){
 	int i = 0;
 	printf("{");
-	while(strcmp(string[i], "\0"))
-		printf("\"%s\", ",string[i++]);
+	while(strcmp(string[i]->integer, "\0"))
+		printf("\"%s\", ",string[i++]->integer);
 	printf("}\n");
 }
