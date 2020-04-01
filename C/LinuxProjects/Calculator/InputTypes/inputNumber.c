@@ -3,28 +3,28 @@
 
 
 
-typedef struct chartok{
+struct chartok{
 	char* id;
 	int intvalue;
 	float floatvalue;
 	int boolfloat;
-} chartok;
+};
+typedef struct chartok;
+
+typedef struct opertok{
+	char* operid;
+};
 
 
 
-
-typedef struct numtok{
-	int integer;
-	float floatingpoint;
+struct numtok{
+	char* integer;
+	char* floatingpoint;
 	int boolFloat;
-	chartok alphanumeric;		
+	chartok alphanumeric;
 	int boolalpanumeric;
-} numtok;
+	opertok operation;
+	int booloper;
+};
 
-
-
-
-
-
-
-
+typedef struct numtok;
