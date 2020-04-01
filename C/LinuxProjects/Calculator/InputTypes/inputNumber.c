@@ -2,29 +2,37 @@
 // can include chars ect
 
 
-
-struct chartok{
+typedef struct chartok{
 	char* id;
-	int intvalue;
-	float floatvalue;
+	char* intvalue;
+	char* floatvalue;
 	int boolfloat;
 };
-typedef struct chartok;
 
 typedef struct opertok{
 	char* operid;
-};
+} opertok;
 
-
-
-struct numtok{
-	char* integer;
+typedef struct numtok{
+	char* integer; // make it an integer and flaoting point after testing with string first
 	char* floatingpoint;
-	int boolFloat;
+	int boolfloat;
 	chartok alphanumeric;
 	int boolalpanumeric;
 	opertok operation;
 	int booloper;
-};
+	int boolbracket;
+} numtok;
 
-typedef struct numtok;
+
+opertok* createOperationToken(char* operidIn){
+	opertok returntok = {operidIn};
+	opertok* operationtok = &returntok;
+	return operationtok;
+}
+
+chartok* createCharToken(char* idIn,char* intvalueIn, char* floatvalueIn, int boolfloatIn){
+	chartok returntok = {idIn, intvalueIn, floatvalueIn, boolfloatIn};
+	chartok* chartoken = &returntok;
+	return chartoken;
+}
