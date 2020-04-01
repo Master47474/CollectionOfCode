@@ -2,19 +2,18 @@
 // can include chars ect
 
 
-struct chartok{
+typedef struct chartok{
 	char* id;
 	char* intvalue;
 	char* floatvalue;
 	int boolfloat;
-} chartok_default = {'\0', '\0', '\0', 0};
-typedef struct chartok chartok;
+} chartok;
 
 typedef struct opertok{
 	char* operid;
 } opertok;
 
-struct numtok{
+typedef struct numtok{
 	char* integer; // make it an integer and flaoting point after testing with string first
 	char* floatingpoint;
 	int boolfloat;
@@ -23,15 +22,19 @@ struct numtok{
 	opertok operation;
 	int booloper;
 	int boolbracket;
-} numtok_default = {'\0', '\0', 0, NULL, 0, NULL, 0, 0};
-
-
-typedef struct numtok numtok;
-=======
-typedef struct numtok{
-	int integer;
-	float floatingpoint;
-	int boolFloat;
-	//type that can have infinite many chars so x y z or xyz
-	// linked list of chartoks	
 } numtok;
+
+
+opertok* createOperationToken(char* operidIn){
+	opertok returntok = {operidIn};
+	opertok* operationtok = &returntok;       	
+	return operationtok;
+}
+
+chartok* createCharToken(char* idIn,char* intvalueIn, char* floatvalueIn, int boolfloatIn){
+	chartok returntok = {idIn, intvalueIn, floatvalueIn, boolfloatIn};
+	chartok* chartoken = &returntok;
+	return chartoken;
+}
+
+
