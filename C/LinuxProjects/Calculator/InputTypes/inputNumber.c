@@ -7,7 +7,7 @@ typedef struct chartok{
 	char* intvalue;
 	char* floatvalue;
 	int boolfloat;
-};
+} chartok;
 
 typedef struct opertok{
 	char* operid;
@@ -25,14 +25,13 @@ typedef struct numtok{
 } numtok;
 
 
-opertok* createOperationToken(char* operidIn){
+opertok createOperationToken(char* operidIn){
 	opertok returntok = {operidIn};
-	opertok* operationtok = &returntok;
-	return operationtok;
+	//opertok* operationtok = &returntok;
+	return returntok;
 }
 
-chartok* createCharToken(char* idIn,char* intvalueIn, char* floatvalueIn, int boolfloatIn){
+chartok createCharToken(char* idIn,char* intvalueIn, char* floatvalueIn, int boolfloatIn){
 	chartok returntok = {idIn, intvalueIn, floatvalueIn, boolfloatIn};
-	chartok* chartoken = &returntok;
-	return chartoken;
+	return returntok;
 }
