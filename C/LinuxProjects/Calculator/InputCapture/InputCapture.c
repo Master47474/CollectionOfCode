@@ -141,6 +141,7 @@ char** captureInput(void){
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
 				//check if opening bracket first
+				//allow un closed open brackets
 				if(isOpenBracket(c)){
 					BracketChecking[BracketCheckingPos++] = c;
 					break;
