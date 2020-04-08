@@ -17,7 +17,7 @@ typedef struct numtok{
 	char* integer; // make it an integer and flaoting point after testing with string first
 	char* floatingpoint;
 	int boolfloat;
-	chartok alphanumeric;		
+	chartok alphanumeric;
 	int boolalpanumeric;
 	opertok operation;
 	int booloper;
@@ -26,7 +26,7 @@ typedef struct numtok{
 
 
 opertok createOperationToken(char* operidIn){
-	opertok returntok = {operidIn};       	
+	opertok returntok = {operidIn};
 	//opertok* operationtok = &returntok;
 	return returntok;
 }
@@ -35,4 +35,3 @@ chartok createCharToken(char* idIn,char* intvalueIn, char* floatvalueIn, int boo
 	chartok returntok = {idIn, intvalueIn, floatvalueIn, boolfloatIn};
 	return returntok;
 }
-
