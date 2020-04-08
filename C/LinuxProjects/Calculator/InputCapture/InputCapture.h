@@ -5,7 +5,7 @@
 #include "InputCapture.c"
 
 
-numtok** captureInput(void);
+char** captureInput(void);
 
 //identify function declarations
 OperationsPrec operation2Enum(const int symbol);
@@ -20,4 +20,4 @@ int isActualEndBracket(const int openBracket, const int closeBracket);
 int isEndBracket(const int bracket);
 int isOpenBracket(const int bracket);
 
-void appendNumber(numtok** string, int* posi, char* temp, int* tempi, numtok* currentToken);
+void appendNumber(char** string, int* posi, char* temp, int* tempi);

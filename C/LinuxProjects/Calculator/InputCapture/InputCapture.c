@@ -88,11 +88,11 @@ char** captureInput(void){
 						tempString[tempPos++] = 'f';
 						decimalNumber = FALSE;
 					}
-					appendNumber(input, &pos, tempString, &tempPos, currentToken);
+					appendNumber(input, &pos, tempString, &tempPos);
 				}
-				char* tempString = malloc(sizeof(numtok));
-				tempString[pos] = malloc(sizeof(numtok*));
-				tempString[pos] = currentToken;
+				tempString[0] = '\0';
+				input[pos] = (char*)malloc(sizeof(char));
+				strcpy(input[pos], tempString);
 				return input;
 			}
 			break;
@@ -113,48 +113,30 @@ char** captureInput(void){
 			{
 				if(tempPos != 0){
 					if(decimalNumber == TRUE){
-						currentToken->boolfloat = TRUE;//tempString[tempPos++] = 'f';
+						tempString[tempPos++] = 'f';
 						decimalNumber = FALSE;
 					}
-					appendNumber(input, &pos, tempString, &tempPos, currentToken);
+					appendNumber(input, &pos, tempString, &tempPos);
 				}
-				numtok* currentToken = malloc(sizeof(numtok));
-				currentToken = &numtok_default;
-				currentToken->booloper = TRUE;
-				opertok operationtok;
-				operationtok.operid[0] = c;
-				operationtok.operid[1] = '\0';
-				currentToken->operation = operationtok;
-				//tempString[0] = c;
-				//tempString[1] = '\0';
-				//(char*)malloc(sizeof(char) * 4);
-				input[pos] = malloc(sizeof(numtok*));
-				input[pos] = currentToken;//strcpy(input[pos], tempString);
+				tempString[0] = c;
+				tempString[1] = '\0';
+				input[pos] = (char*)malloc(sizeof(char) * 4);
+				strcpy(input[pos], tempString);
 			}
 			break;
 			case INPUT_BRACKET:
 			{
 				if(tempPos != 0){
 					if(decimalNumber == TRUE){
-						currentToken->boolfloat = TRUE;//tempString[tempPos++] = 'f';
+						tempString[tempPos++] = 'f';
 						decimalNumber = FALSE;
 					}
-					appendNumber(input, &pos, tempString, &tempPos, currentToken);
+					appendNumber(input, &pos, tempString, &tempPos);
 				}
-				numtok* currentToken = malloc(sizeof(numtok));
-				currentToken = &numtok_default;
-				currentToken->booloper = TRUE;
-				opertok operationtok;
-				operationtok.operid = malloc(sizeof(char) * 4);
-				operationtok.operid[0] = c;
-				operationtok.operid[1] = '\0';
-				currentToken->operation = operationtok;
-				//tempString[0] = c;
-				 //tempString[1] = '\0';
-				//(char*)malloc(sizeof(char) * 4);
-				input[pos] = malloc(sizeof(numtok*));
-				input[pos] = currentToken;//strcpy(input[pos], tempString);
-
+				tempString[0] = c;
+				tempString[1] = '\0';
+				input[pos] = (char*)malloc(sizeof(char) * 4);
+				strcpy(input[pos], tempString);
 
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
@@ -284,11 +266,9 @@ int isActualEndBracket(const int openBracket, const int closeBracket){
 
 
 
-void appendNumber(numtok** string, int* posi, char* temp, int* tempi, numtok* currentToken){
+void appendNumber(char** string, int* posi, char* temp, int* tempi){
 	temp[(*tempi)++] = '\0';
-	currentToken->integer = malloc(sizeof(char) * (*tempi));
-	strcpy(strinc, temp);
-	string[(*posi)] = malloc(sizeof(numtok*));
-	string[(*posi)++] = currentToken;
+	string[*posi] = (char*)malloc(sizeof(char) * (*tempi));
+	strcpy(string[(*posi)++], temp);
 	*tempi = 0;
 }

@@ -12,7 +12,7 @@ void printDebug(char** string);
 // main
 
 int main(void){
-	printf("LEts start\n");
+
 	printDebug(captureInput());
 
 
@@ -23,7 +23,7 @@ int main(void){
 void printDebug(char** string){
 	int i = 0;
 	printf("{");
-	while(string[i] != '\0'))
+	while(strcmp(string[i], "\0"))
 		printf("\"%s\", ",string[i++]);
 	printf("}\n");
 }

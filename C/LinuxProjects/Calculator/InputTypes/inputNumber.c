@@ -4,14 +4,14 @@
 
 typedef struct chartok{
 	char* id;
-	char* intvalue;
-	char* floatvalue;
+	int intvalue;
+	float floatvalue;
 	int boolfloat;
 } chartok;
 
 typedef struct opertok{
 	char* operid;
-} opertok;
+}opertok;
 
 typedef struct numtok{
 	char* integer; // make it an integer and flaoting point after testing with string first
