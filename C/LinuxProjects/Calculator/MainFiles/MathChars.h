@@ -12,3 +12,4 @@
 #define ENDBRACKET ")]}"
 
 #define DECIMALPOINT '.'
+

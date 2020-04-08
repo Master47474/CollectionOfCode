@@ -5,16 +5,20 @@
 
 //file Imports
 #include "../InputCapture/InputCapture.h"
-
+#include "../InputCapture/parsetree.c"
 
 void printDebug(char** string);
 
 // main
 
 int main(void){
-
-	printDebug(captureInput());
-
+	char** stringy = captureInput();
+	printDebug(stringy);
+	printf("before Building\n");
+	struct node* tree = buildParseTree(stringy);
+	printf("after Buidlsing\n");
+	printInOrder(tree);
+	printf("\n");	
 
 	return EXIT_SUCCESS;
 }
