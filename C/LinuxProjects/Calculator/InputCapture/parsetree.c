@@ -25,7 +25,8 @@ void printInOrder(struct node* tree){
 	if(tree != NULL){
 		printInOrder(getLeft(tree));
 		printInOrder(getRight(tree));
-		printf(" %s ", tree->value);
+		if(tree->value != NULL) printf(" %s ", tree->value);	
+		//printf("go up\n");
 	}
 }
 
@@ -34,29 +35,9 @@ void printInOrder(struct node* tree){
 struct node* buildParseTree(char** tokenExp){
 	printf("Pre Testing ----------------\n");
 	struct node* headd = (struct node*)malloc(sizeof(struct node));
-	struct node* currentt = headd;
-	char* temp = "hello\0";
-	currentt->value = (char*)malloc(sizeof(temp));
-	strcpy(currentt->value, temp);
-	printf("Gonna Set some new nodes %s\n", currentt->value);
-	
-	struct node* next = (struct node*)malloc(sizeof(struct node));
-	currentt->right = next;
-	currentt = currentt->right;
-	
-	char* nig = "nigor lol\0";
-	currentt->value = (char*)malloc(sizeof(nig));
-	strcpy(currentt->value, nig);
-
-	printf("SUP %s\n", currentt->value);
-	
-	
 
 
 
-	printf("DONE Testing -----\n");
-	
-	
 	struct node* head = (struct node*)malloc(sizeof(struct node));
 	struct node* current = head;
 	int expi = 0;
@@ -67,7 +48,7 @@ struct node* buildParseTree(char** tokenExp){
 	while(strcmp(tokenExp[expi], "\0")){
 		printf("WE EXEXUCITNG %s \n", tokenExp[expi]);
 		if(isOpenBracket(tokenExp[expi][0])){
-			insertRight(current);
+			insertLeft(current);
 			current = current->left;
 		}else if(isOperation(tokenExp[expi][0])){
 			printf("-This is a operation\n");
@@ -87,33 +68,43 @@ struct node* buildParseTree(char** tokenExp){
 	}
 	return head;
 }
+
+
+
 void insertLeft(struct node* head){
-	struct node* new = (struct node*)malloc(sizeof(struct node));
+	struct node* new;
+       	new = (struct node*)malloc(sizeof(struct node));
 	new->parent = head;
+
+	head->left = (struct node*)malloc(sizeof(struct node));
 	head->left = new;
 }
 
 void insertRight(struct node* head){
-	struct node* new = (struct node*)malloc(sizeof(struct node));
+	struct node* new;
+       	new = (struct node*)malloc(sizeof(struct node));
 	new->parent = head;
+
+	head->right = (struct node*)malloc(sizeof(struct node));
 	head->right = new;
 }
 
-void setValue(struct node* current, char* value){
-	printf("Inside the func    %ld \n", sizeof(value));
-	current->parent = NULL;
+void setValue(struct node* current, char* value){ 
 	printf("NOW \n");
-	current->value = (char*)malloc(sizeof(value));
+	current->value = malloc(sizeof(value));
 	printf("After memory\n");
 	strcpy(current->value, value);
 	printf("Set it\n");
 }
 
 struct node* getLeft(struct node* current){
+	//printf("Getting LEft\n");
 	return current->left;
 }
 
+
 struct node* getRight(struct node* current){
+	//printf("getting right\n");
 	return current->right;
 }
 

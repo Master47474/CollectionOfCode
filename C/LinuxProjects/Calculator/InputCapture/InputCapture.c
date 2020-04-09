@@ -66,13 +66,20 @@ char** captureInput(void){
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
 	int decimalNumber = FALSE;
-
+	
 
 
 	if(!input || !tempString || !BracketChecking){
 		printf("Allocation Error\n");
 		exit(EXIT_FAILURE);
 	}
+	
+	//always encapsulate with brackets
+	tempString[0] = '(';
+	tempString[1] = '\0';
+	input[pos] = (char*)malloc(sizeof(char) * 4);
+	strcpy(input[pos], tempString);
+	pos++;
 
 	while(1){
 		c = getchar();
