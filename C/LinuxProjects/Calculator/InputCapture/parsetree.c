@@ -24,44 +24,55 @@ char* getValue(struct node* current);
 void printInOrder(struct node* tree){
 	if(tree != NULL){
 		printInOrder(getLeft(tree));
-		printInOrder(getRight(tree));
 		if(tree->value != NULL) printf(" %s ", tree->value);	
-		//printf("go up\n");
+		printInOrder(getRight(tree));	
 	}
 }
 
 
 
 struct node* buildParseTree(char** tokenExp){
-	printf("Pre Testing ----------------\n");
-	struct node* headd = (struct node*)malloc(sizeof(struct node));
-
-
-
 	struct node* head = (struct node*)malloc(sizeof(struct node));
 	struct node* current = head;
 	int expi = 0;
 	
-
-
 
 	while(strcmp(tokenExp[expi], "\0")){
 		printf("WE EXEXUCITNG %s \n", tokenExp[expi]);
 		if(isOpenBracket(tokenExp[expi][0])){
 			insertLeft(current);
 			current = current->left;
+			//printf("---- INSERT LEFT NODE AND GO LEFT\n");
 		}else if(isOperation(tokenExp[expi][0])){
-			printf("-This is a operation\n");
+			if(hasPrecedence((long unsigned int)tokenExp[expi], (long unsigned int)current->value)){
+				current = current->right;
+				char* temp = current->value;
+				insertLeft(current);
+				current = current->left;
+				setValue(current, temp);
+				current = current->parent;
+			}
+			if(current->right != NULL){
+				//therefor both childs are used i.e make new node the head and make this the left node
+				struct node* newhead = (struct node*)malloc(sizeof(struct node));
+				newhead->left = head;
+				head-> parent = newhead;
+				head = head-> parent;
+				current = current->parent;
+			}
+			//printf("---- This is a operation, ");
 			setValue(current, tokenExp[expi]);
-			printf("-Set the Value\n");
+			//printf("---- set the value ,");
 			insertRight(current);
+			//printf("---- insert a right node, and go to right node\n");
 			current = current->right;
 		}else if(isDigit(tokenExp[expi][0]) || tokenExp[expi][0] == '.'){
-			printf("-THIS IS A DIGIT\n");
+			//printf("---- THIS IS A DIGIT, ");
 			setValue(current, tokenExp[expi]);
-			printf("-After setting a value\n");
+			//printf("-After setting a value, and go UP!!!!!!!!!!!!\n");
 			current = current->parent;
 		}else if(isEndBracket(tokenExp[expi][0])){
+			//printf("----------GO UP TO PARENT\n");
 			current = current->parent;
 		}
 		expi++;
@@ -90,11 +101,8 @@ void insertRight(struct node* head){
 }
 
 void setValue(struct node* current, char* value){ 
-	printf("NOW \n");
 	current->value = malloc(sizeof(value));
-	printf("After memory\n");
 	strcpy(current->value, value);
-	printf("Set it\n");
 }
 
 struct node* getLeft(struct node* current){

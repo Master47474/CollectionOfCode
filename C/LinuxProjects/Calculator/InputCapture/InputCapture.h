@@ -8,9 +8,9 @@
 char** captureInput(void);
 
 //identify function declarations
-OperationsPrec operation2Enum(const int symbol);
-int isOperation(const int symbol);
-
+OperationsPrec operation2Enum(int symbol);
+int isOperation(int symbol);
+int hasPrecedence(int oper1, int oper2);
 
 int GetInputIdentifier(char c);
 int isLetter(const int letter);

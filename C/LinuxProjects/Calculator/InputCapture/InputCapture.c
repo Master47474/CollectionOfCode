@@ -27,18 +27,19 @@ const static struct{
 	int symbol;
 } conversion[] = {
 	{EXPONENTIAL, '^'},
-	{MULTIPLICATION, '*'},
-	{DIVISION, '/'},
-	{ADDITION   , '+'},
-	{SUBTRACTION, '-'},
+	{MULTIPLICATION, '*'  },
+	{DIVISION, '/'  },
+	{ADDITION   , '+'  },
+	{SUBTRACTION, '-'  },
 };
 
 
 char** captureInput(void);
 
 //identify function declarations
-OperationsPrec operation2Enum(const int symbol);
-int isOperation(const int symbol);
+OperationsPrec operation2Enum(int symbol);
+int isOperation(int symbol);
+int hasPrecedence(int oper1, int oper2);
 
 //input identifiers
 int GetInputIdentifier(char c);
@@ -190,17 +191,23 @@ char** captureInput(void){
 
 
 
-OperationsPrec operation2Enum(const int symbol){
+OperationsPrec operation2Enum(int symbol){
 	int j;
 	for(j = 0; j< sizeof(conversion)/sizeof(conversion[0]); ++j)
-		if( symbol == conversion[j].symbol)
+		if(symbol == conversion[j].symbol)
 			return conversion[j].oper;
 	return OPERERROR;
 }
 
 
-int isOperation(const int symbol){
+int isOperation(int symbol){
 	if(operation2Enum(symbol) >= 0)
+		return TRUE;
+	return FALSE;
+}
+
+int hasPrecedence(int oper1, int oper2){
+	if(operation2Enum(oper1) > operation2Enum(oper2))
 		return TRUE;
 	return FALSE;
 }
