@@ -44,6 +44,7 @@ struct node* buildParseTree(char** tokenExp){
 			current = current->left;
 			//printf("---- INSERT LEFT NODE AND GO LEFT\n");
 		}else if(isOperation(tokenExp[expi][0])){
+			//if(operation2Enum((long unsigned int)tokenExp[expi]) == operation2Enum((long unsigned int)current->value)){}
 			if(hasPrecedence((long unsigned int)tokenExp[expi], (long unsigned int)current->value)){
 				current = current->right;
 				char* temp = current->value;
