@@ -287,3 +287,12 @@ void appendNumber(char** string, int* posi, char* temp, int* tempi){
 	strcpy(string[(*posi)++], temp);
 	*tempi = 0;
 }
+
+
+
+
+
+
+
+
+

@@ -44,22 +44,24 @@ struct node* buildParseTree(char** tokenExp){
 			current = current->left;
 			//printf("---- INSERT LEFT NODE AND GO LEFT\n");
 		}else if(isOperation(tokenExp[expi][0])){
-			//if(operation2Enum((long unsigned int)tokenExp[expi]) == operation2Enum((long unsigned int)current->value)){}
-			if(hasPrecedence((long unsigned int)tokenExp[expi], (long unsigned int)current->value)){
-				current = current->right;
-				char* temp = current->value;
-				insertLeft(current);
-				current = current->left;
-				setValue(current, temp);
-				current = current->parent;
-			}
-			if(current->right != NULL){
-				//therefor both childs are used i.e make new node the head and make this the left node
-				struct node* newhead = (struct node*)malloc(sizeof(struct node));
-				newhead->left = head;
-				head-> parent = newhead;
-				head = head-> parent;
-				current = current->parent;
+			if(current->value != NULL){
+				//if(operation2Enum((long unsigned int)tokenExp[expi]) == operation2Enum((long unsigned int)current->value)){}
+				if(hasPrecedence((long unsigned int)tokenExp[expi], (long unsigned int)current->value)){
+					current = current->right;
+					char* temp = current->value;
+					insertLeft(current);
+					current = current->left;
+					setValue(current, temp);
+					current = current->parent;
+				}
+				if(current->right != NULL){
+					//therefor both childs are used i.e make new node the head and make this the left node
+					struct node* newhead = (struct node*)malloc(sizeof(struct node));
+					newhead->left = head;
+					head-> parent = newhead;
+					head = head-> parent;
+					current = current->parent;
+				}
 			}
 			//printf("---- This is a operation, ");
 			setValue(current, tokenExp[expi]);
@@ -121,3 +123,39 @@ char* getValue(struct node* current){
 	return current->value;
 }
 
+
+int EvalueateTree(struct node* current){
+	int x, y;
+	
+	// left is x
+	// check if left is an operation
+	printf("Left -> %c \n", current->left->value[0]);
+	if(isOperation(current->left->value[0])){
+		printf("going Left\n");
+		x = EvalueateTree(current->left);
+	} else{
+		x = atoi(current->left->value);
+	}
+
+	//right is y
+	//check if right is an operation
+	printf("Right -> %c \n", current->right->value[0]);
+	if(isOperation(current->right->value[0])){
+		printf("going right\n");
+		y = EvalueateTree(current->right);
+	}else{
+		y = atoi(current->right->value);
+	}
+	printf("this is X, %d \n", x);
+	printf("this is Y, %d \n", y);
+	printf("GOING UP\n");
+	// return x (operation) right
+	if(!strcmp(current->value, "+"))
+		return x + y;
+	if(!strcmp(current->value, "-"))
+		return x - y;
+	if(!strcmp(current->value, "*"))
+		return x * y;
+	if(!strcmp(current->value, "/"))
+		return (int)(x/y);
+}

@@ -19,7 +19,8 @@ int main(void){
 	printf("after Buidlsing\n");
 	printInOrder(tree);
 	printf("\n");	
-
+	int result = EvalueateTree(tree);
+	printf("THIS IS THE RESULT %d\n", result);
 	return EXIT_SUCCESS;
 }
 
