@@ -207,7 +207,7 @@ int isOperation(int symbol){
 }
 
 int hasPrecedence(int oper1, int oper2){
-	if(operation2Enum(oper1) > operation2Enum(oper2))
+	if(operation2Enum(oper1) < operation2Enum(oper2))
 		return TRUE;
 	return FALSE;
 }
