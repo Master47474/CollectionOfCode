@@ -124,8 +124,8 @@ char* getValue(struct node* current){
 }
 
 
-int EvalueateTree(struct node* current){
-	int x, y;
+float EvalueateTree(struct node* current){
+	float x, y;
 	
 	// left is x
 	// check if left is an operation
@@ -146,8 +146,8 @@ int EvalueateTree(struct node* current){
 	}else{
 		y = atoi(current->right->value);
 	}
-	printf("this is X, %d \n", x);
-	printf("this is Y, %d \n", y);
+	printf("this is X, %f \n", x);
+	printf("this is Y, %f \n", y);
 	printf("GOING UP\n");
 	// return x (operation) right
 	if(!strcmp(current->value, "+"))
@@ -157,5 +157,5 @@ int EvalueateTree(struct node* current){
 	if(!strcmp(current->value, "*"))
 		return x * y;
 	if(!strcmp(current->value, "/"))
-		return (int)(x/y);
+		return (x/y);
 }
