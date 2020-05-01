@@ -19,5 +19,7 @@ int isDigit(const int digit);
 int isActualEndBracket(const int openBracket, const int closeBracket);
 int isEndBracket(const int bracket);
 int isOpenBracket(const int bracket);
+int isAssignmentOperation(const int c);
+
 
 void appendNumber(char** string, int* posi, char* temp, int* tempi);

@@ -69,8 +69,8 @@ struct node* buildParseTree(char** tokenExp){
 			insertRight(current);
 			//printf("---- insert a right node, and go to right node\n");
 			current = current->right;
-		}else if(isDigit(tokenExp[expi][0]) || tokenExp[expi][0] == '.'){
-			//printf("---- THIS IS A DIGIT, ");
+		}else if(isDigit(tokenExp[expi][0]) || tokenExp[expi][0] == '.' || isLetter(tokenExp[expi][0])){
+			//printf("---- THIS IS A DIGIT, or char \n");
 			setValue(current, tokenExp[expi]);
 			//printf("-After setting a value, and go UP!!!!!!!!!!!!\n");
 			current = current->parent;

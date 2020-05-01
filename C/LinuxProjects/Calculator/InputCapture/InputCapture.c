@@ -49,7 +49,7 @@ int isDigit(const int digit);
 int isActualEndBracket(const int openBracket, const int closeBracket);
 int isEndBracket(const int bracket);
 int isOpenBracket(const int bracket);
-
+int isAssignmentOperation(const int c);
 
 //appending to number
 void appendNumber(char** string, int* posi, char* temp, int* tempi);
@@ -99,8 +99,10 @@ char** captureInput(void){
 					appendNumber(input, &pos, tempString, &tempPos);
 				}
 				tempString[0] = '\0';
+				printf("at pos %d\n", pos);
 				input[pos] = (char*)malloc(sizeof(char));
 				strcpy(input[pos], tempString);
+				printf("END NOW\n");
 				return input;
 			}
 			break;
@@ -108,8 +110,27 @@ char** captureInput(void){
 				continue;
 			break;
 			case INPUT_CHAR:
-				continue;
-				//fill this in
+			{
+				if(tempPos != 0){
+					if(decimalNumber == TRUE){
+						tempString[tempPos++] = 'f';
+						decimalNumber = FALSE;
+					}
+					appendNumber(input, &pos, tempString, &tempPos);
+				
+					//for the * operation
+					tempString[0] = '*';
+					tempString[1] = '\0';
+					input[pos] = (char*)malloc(sizeof(char) * 4);
+					strcpy(input[pos++], tempString);
+				}
+								
+				//for the Char
+				tempString[0] = c;
+				tempString[1] = '\0';
+				input[pos] = (char*)malloc(sizeof(char) * 4);
+				strcpy(input[pos], tempString);
+			}
 			break;
 			case INPUT_DIGIT:
 				if(c == DECIMALPOINT) decimalNumber = TRUE;
@@ -166,10 +187,28 @@ char** captureInput(void){
 				}
 			}
 			break;
+			case(INPUT_ASSIGNMENT):
+			{
+				if(tempPos != 0){
+					if(decimalNumber == TRUE){
+						tempString[tempPos++] = 'f';
+						decimalNumber = FALSE;
+					}
+					appendNumber(input, &pos, tempString, &tempPos);
+				}
+				tempString[0] = c;
+				tempString[1] = '\0';
+				printf("Temp string = %d\n", pos);
+				input[pos] = (char*)malloc(sizeof(char) * 4);
+				strcpy(input[pos], tempString);
+			}
+			break;
 			default:
 				continue;
 		}
 
+		
+		//if our string is out of space add more memory
 		if(pos >= bufsize){
 			bufsize += INPUTBUFSIZE;
 			input = realloc(input, bufsize);
@@ -178,7 +217,9 @@ char** captureInput(void){
 				exit(EXIT_FAILURE);
 			}
 		}
+		printf("pos %d \n" , pos);
 		pos++;
+		printf("pos++ %d \n", pos);
 	}
 
 	free(tempString);
@@ -238,7 +279,7 @@ int GetInputIdentifier(char c){
 	if(isOperation(c)) return INPUT_OPERATION;
 	if(isDigit(c) || c == DECIMALPOINT) return INPUT_DIGIT;
 	if(isBracket(c)) return INPUT_BRACKET;
-
+	if(isAssignmentOperation(c)) return INPUT_ASSIGNMENT;
 	return INPUT_ERROR;
 }
 
@@ -279,6 +320,12 @@ int isActualEndBracket(const int openBracket, const int closeBracket){
 	}
 }
 
+int isAssignmentOperation(const int c){
+	for(int i = 0; i < sizeof(ASSIGNMENTCHAR)/sizeof(char); i++)
+		if(c == ASSIGNMENTCHAR[i])
+			return TRUE;
+	return FALSE;
+}
 
 
 void appendNumber(char** string, int* posi, char* temp, int* tempi){
