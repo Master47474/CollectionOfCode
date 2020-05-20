@@ -4,7 +4,10 @@
 
 
 //file imports
-#include "parsetypes.c"
+#ifndef FILE_DEFINITIONS
+#define FILE_FEDINITIONS
+#include "../MainFiles/definitions.c"
+#endif
 
 struct node{
 	struct node* parent;

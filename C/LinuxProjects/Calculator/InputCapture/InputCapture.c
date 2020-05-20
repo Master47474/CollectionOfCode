@@ -10,6 +10,10 @@
 
 //imports
 #include "../MainFiles/MathChars.h"
+#ifndef FILE_DEFINITIONS
+#define FILE_DEFINITIONS
+#include "../MainFiles/definitions.c"
+#endif
 
 
 // operation functions and enums
@@ -34,7 +38,7 @@ const static struct{
 };
 
 
-char** captureInput(void);
+term* captureInput(void);
 
 //identify function declarations
 OperationsPrec operation2Enum(int symbol);
@@ -52,25 +56,28 @@ int isOpenBracket(const int bracket);
 int isAssignmentOperation(const int c);
 
 //appending to number
-void appendNumber(char** string, int* posi, char* temp, int* tempi);
+void appendTerm(term* expression, term addTerm,int* posi, int* tempi, int* alpai);
 
+//creating terms
+term createTerm(char* coefficient, char* alphanumeric, int coeffPos, int alphanumPos, int boolOperation, int boolbracket, int Termination);
 
 // redo capture input
 // only works with Ints no floats as of yet
-char** captureInput(void){
+term* captureInput(void){
 	int bufsize = INPUTBUFSIZE;
 	int pos = 0;
-	char** input = (char**)malloc(sizeof(char*) * bufsize);
+	term* input = (term*)malloc(sizeof(term) * bufsize);
 	int c;
 	char* tempString = malloc(sizeof(char) * bufsize);
 	int tempPos = 0;
+	char* alphaString = malloc(sizeof(char) * bufsize);
+	int alphaPos = 0;
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
 	int decimalNumber = FALSE;
 	
 
-
-	if(!input || !tempString || !BracketChecking){
+	if(!input || !tempString || !BracketChecking || !alphaString){
 		printf("Allocation Error\n");
 		exit(EXIT_FAILURE);
 	}
@@ -78,10 +85,7 @@ char** captureInput(void){
 	//always encapsulate with brackets
 	tempString[0] = '(';
 	tempString[1] = '\0';
-	input[pos] = (char*)malloc(sizeof(char) * 4);
-	strcpy(input[pos], tempString);
-	pos++;
-
+	input[pos++] = createTerm(tempString, alphaString, 1, alphaPos, 0, 0, 0);
 	while(1){
 		c = getchar();
 		// printf("Tokenizing \"%c\"\n", c);
@@ -91,17 +95,17 @@ char** captureInput(void){
 			break;
 			case INPUT_END:
 			{
+				//create term adds the zeroes for us
 				if(tempPos != 0){
-					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
-						decimalNumber = FALSE;
-					}
-					appendNumber(input, &pos, tempString, &tempPos);
-				}
-				tempString[0] = '\0';
-				printf("at pos %d\n", pos);
-				input[pos] = (char*)malloc(sizeof(char));
-				strcpy(input[pos], tempString);
+					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
+					//add term
+					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
+				}				
+
+				//add termination Term
+				term termination = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, TRUE);
+				appendTerm(input, termination, &pos, &tempPos, &alphaPos);
+
 				printf("END NOW\n");
 				return input;
 			}
@@ -111,61 +115,40 @@ char** captureInput(void){
 			break;
 			case INPUT_CHAR:
 			{
-				if(tempPos != 0){
-					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
-						decimalNumber = FALSE;
-					}
-					appendNumber(input, &pos, tempString, &tempPos);
-				
-					//for the * operation
-					tempString[0] = '*';
-					tempString[1] = '\0';
-					input[pos] = (char*)malloc(sizeof(char) * 4);
-					strcpy(input[pos++], tempString);
-				}
-								
-				//for the Char
-				tempString[0] = c;
-				tempString[1] = '\0';
-				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);
+				alphaString[alphaPos++] = c;
+				pos--;
 			}
 			break;
 			case INPUT_DIGIT:
+			{
 				if(c == DECIMALPOINT) decimalNumber = TRUE;
 				tempString[tempPos++] = c;
 				pos--;
-				// fill this in
+			}
 			break;
 			case INPUT_OPERATION:
 			{
 				if(tempPos != 0){
-					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
-						decimalNumber = FALSE;
-					}
-					appendNumber(input, &pos, tempString, &tempPos);
+					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
+					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
 				}
 				tempString[0] = c;
-				tempString[1] = '\0';
-				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);
+				term operation = createTerm(tempString , alphaString, 1, alphaPos, TRUE, FALSE, FALSE); //this is so we can input the operation
+				appendTerm(input, operation, &pos, &tempPos, &alphaPos);
+				pos--; //because we add one in the append term
 			}
 			break;
 			case INPUT_BRACKET:
 			{
 				if(tempPos != 0){
-					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
-						decimalNumber = FALSE;
-					}
-					appendNumber(input, &pos, tempString, &tempPos);
+					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
+					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
 				}
+
+				//input the bracket
 				tempString[0] = c;
-				tempString[1] = '\0';
-				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);
+				term bracket = createTerm(tempString, alphaString, 1, alphaPos, FALSE, TRUE, FALSE); //for a bracket
+				appendTerm(input, bracket, &pos, &tempPos, &alphaPos);
 
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
@@ -187,21 +170,8 @@ char** captureInput(void){
 				}
 			}
 			break;
-			case(INPUT_ASSIGNMENT):
-			{
-				if(tempPos != 0){
-					if(decimalNumber == TRUE){
-						tempString[tempPos++] = 'f';
-						decimalNumber = FALSE;
-					}
-					appendNumber(input, &pos, tempString, &tempPos);
-				}
-				tempString[0] = c;
-				tempString[1] = '\0';
-				printf("Temp string = %d\n", pos);
-				input[pos] = (char*)malloc(sizeof(char) * 4);
-				strcpy(input[pos], tempString);
-			}
+			case INPUT_ASSIGNMENT:
+				continue;
 			break;
 			default:
 				continue;
@@ -217,11 +187,9 @@ char** captureInput(void){
 				exit(EXIT_FAILURE);
 			}
 		}
-		printf("pos %d \n" , pos);
 		pos++;
-		printf("pos++ %d \n", pos);
 	}
-
+	free(alphaString);
 	free(tempString);
 	free(BracketChecking);
 	return input;
@@ -328,16 +296,43 @@ int isAssignmentOperation(const int c){
 }
 
 
-void appendNumber(char** string, int* posi, char* temp, int* tempi){
-	temp[(*tempi)++] = '\0';
-	string[*posi] = (char*)malloc(sizeof(char) * (*tempi));
-	strcpy(string[(*posi)++], temp);
+void appendTerm(term* expression, term addTerm,int* posi, int* tempi, int* alpai){
+	expression[(*posi)++] = addTerm;
+	
+	//set back to zero
 	*tempi = 0;
+	*alpai = 0;
 }
 
 
 
+term createTerm(char* coefficient, char* alphanumeric, int coeffPos, int alphanumPos, int boolOperation, int boolBracket, int Termination){
+	//add null chars to coeff and alpha first
+	coefficient[coeffPos] = '\0';
+	alphanumeric[alphanumPos] = '\0';
+		
+	term toAdd;
+	toAdd.boolisOperation = boolOperation;
+	toAdd.isTermination = Termination;
+	toAdd.boolBracket = boolBracket;
+	if(coeffPos == 0){
+		toAdd.boolhascoeff = 0; // no coefficient
+	}else{
+		toAdd.coefficient = (char*)malloc(sizeof(coefficient)+1);
+		strcpy(toAdd.coefficient, coefficient);
+		toAdd.boolhascoeff = 1;
+	}
 
+	if(alphanumPos == 0){
+		toAdd.boolhasalpha = 0;
+	}else{
+		toAdd.alphanumeric = (char*)malloc(sizeof(alphanumeric) + 1);
+		strcpy(toAdd.alphanumeric, alphanumeric);
+		toAdd.boolhasalpha = 1;
+	}
+
+	return toAdd;
+}
 
 
 

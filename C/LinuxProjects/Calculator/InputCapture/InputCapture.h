@@ -5,7 +5,7 @@
 #include "InputCapture.c"
 
 
-char** captureInput(void);
+term* captureInput(void);
 
 //identify function declarations
 OperationsPrec operation2Enum(int symbol);
@@ -21,5 +21,9 @@ int isEndBracket(const int bracket);
 int isOpenBracket(const int bracket);
 int isAssignmentOperation(const int c);
 
+//appending to number
+void appendTerm(term* expression, term addTerm,int* posi, int* tempi, int* alpai);
 
-void appendNumber(char** string, int* posi, char* temp, int* tempi);
+//creating terms
+term createTerm(char* coefficient, char* alphanumeric, int coeffPos, int alphanumPos, int boolOperation, int boolbracket, int Termination);
+

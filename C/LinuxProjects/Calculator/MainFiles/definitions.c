@@ -9,4 +9,6 @@ typedef struct term{
 	int boolhascoeff;
 	int boolhasalpha;
 	int boolisOperation; //operation will be stored in the coefficient slot
+	int boolBracket;     // same with brackets
+	int isTermination;
 } term;
