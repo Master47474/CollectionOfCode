@@ -5,7 +5,10 @@
 
 //file Imports
 #include "../InputCapture/InputCapture.h"
-#include "../InputCapture/parsetree.c"
+#include "../Parsing/parsetree.c"
+#include "../Evaluation/evaluate.c"
+
+
 
 void printDebug(char** string);
 

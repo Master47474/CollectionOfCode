@@ -13,10 +13,10 @@ void debug(term* expression, int pos){
 	for(int i = 0; i < pos; i++){
 		term curTerm = expression[i];
 		printf(" ");
-		if(curTerm.boolisOperation == 1 || curTerm.boolhascoeff == 1){
+		if(curTerm.boolisOperation || curTerm.boolhascoeff){
 			printf("%s", curTerm.coefficient);
 		}
-		if(curTerm.boolhasalpha == 1){
+		if(curTerm.boolhasalpha){
 			printf("%s",curTerm.alphanumeric);
 		}
 	}
@@ -25,7 +25,7 @@ void debug(term* expression, int pos){
 
 int main(){
 	printf("Sup \n");
-	char* iterate = "1a+2b + c\n";
+	char* iterate = "1+2\n";
 	int i = 0;
 	term* expression = malloc(sizeof(term) * 1024);//allocate 1024 of space
 	int pos = 0;
@@ -49,15 +49,12 @@ int main(){
 			break;
 			case INPUT_END:
 			{
-				printf("We in the END GAME NOW\n");
 				temp[temppos] = '\0';
 				alpha[tempchar] = '\0';
 				term toAdd;
-				toAdd.boolisOperation = 0;
 				if (temppos == 0){
 					toAdd.boolhascoeff = 0;
 				}else{
-					toAdd.coefficient = (char*)malloc(sizeof(char)+1);
 					strcpy(toAdd.coefficient, temp);
 					toAdd.boolhascoeff = 1;
 				}
@@ -65,13 +62,10 @@ int main(){
 				if(tempchar == 0){
 					toAdd.boolhasalpha = 0;
 				}else{
-					toAdd.alphanumeric = (char*)malloc(sizeof(temp)+1);
 					strcpy(toAdd.alphanumeric, alpha);
 					toAdd.boolhasalpha = 1;
 				}
-				printf("at POS %d\n", pos);
 				expression[pos] = toAdd;
-				debug(expression, pos);
 				temppos = 0;
 				tempchar = 0;
 				
@@ -97,7 +91,6 @@ int main(){
 				temp[temppos] = '\0';
 				alpha[tempchar] = '\0';
 				term toAdd;
-				toAdd.boolisOperation = 0;
 				printf("We Just Created a Term\n");
 				if (temppos == 0){
 					toAdd.boolhascoeff = 0;
@@ -106,11 +99,11 @@ int main(){
 					strcpy(toAdd.coefficient,temp);
 					toAdd.boolhascoeff = 1;
 				}
-				printf("WE in the Middle \n");
+
 				if(tempchar == 0){
 					toAdd.boolhasalpha = 0;
 				}else{
-					toAdd.alphanumeric = (char*)malloc(sizeof(alpha) + 1);
+					toAdd.coefficient = (char*)malloc(sizeof(alpha) + 1);
 					strcpy(toAdd.alphanumeric, alpha);
 					toAdd.boolhasalpha = 1;
 				}
@@ -121,13 +114,10 @@ int main(){
 
 				//deal with operation
 				term operation;
-				operation.boolhascoeff = 0;
-				operation.boolhasalpha = 0;
 				operation.boolisOperation = 1;
-				operation.coefficient = (char*)malloc(sizeof(c)+1);
+				operation.coefficient = malloc(sizeof(char)*4);
 				operation.coefficient[0] = c;
 				operation.coefficient[1] = '\0';
-				printf("%s \n", operation.coefficient);
 				expression[pos] = operation;
 			}
 			break;
@@ -137,7 +127,7 @@ int main(){
 		} 
 		pos++;	
 	}
-	debug(expression, pos);
+	pos--;
 	printf("WE MADE IT WITH %d terms\n", pos);
 	return 0;
 }
