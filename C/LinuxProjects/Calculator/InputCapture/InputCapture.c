@@ -85,7 +85,7 @@ term* captureInput(void){
 	//always encapsulate with brackets
 	tempString[0] = '(';
 	tempString[1] = '\0';
-	input[pos++] = createTerm(tempString, alphaString, 1, alphaPos, 0, 0, 0);
+	input[pos++] = createTerm(tempString, alphaString, 1, alphaPos, 0, 1, 0);
 	while(1){
 		c = getchar();
 		// printf("Tokenizing \"%c\"\n", c);
@@ -106,7 +106,7 @@ term* captureInput(void){
 				term termination = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, TRUE);
 				appendTerm(input, termination, &pos, &tempPos, &alphaPos);
 
-				printf("END NOW\n");
+				printf("Captured Normally\n");
 				return input;
 			}
 			break;
@@ -140,6 +140,7 @@ term* captureInput(void){
 			break;
 			case INPUT_BRACKET:
 			{
+				
 				if(tempPos != 0){
 					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
 					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
@@ -149,7 +150,8 @@ term* captureInput(void){
 				tempString[0] = c;
 				term bracket = createTerm(tempString, alphaString, 1, alphaPos, FALSE, TRUE, FALSE); //for a bracket
 				appendTerm(input, bracket, &pos, &tempPos, &alphaPos);
-
+				
+				pos--;
 				//assume BracketChecking never reaches its max allocation size
 				//check that bracket that was added is valid
 				//check if opening bracket first

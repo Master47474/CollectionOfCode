@@ -13,51 +13,74 @@ struct node{
 	struct node* parent;
 	struct node* left;
 	struct node* right;
-	char* value;
+	term* value; //list of terms
+	int length;
 };
 
 
 //setting
 void insertLeft(struct node* head);
 void insertRight(struct node* head);
-void setValue(struct node* current, char* value);
+void setValue(struct node* current, term value);
 //getting
 struct node* getLeft(struct node* current);
 struct node* getRight(struct node* current);
-char* getValue(struct node* current);
+term* getValue(struct node* current);
 
 //printing
 void printInOrder(struct node* tree){
 	if(tree != NULL){
 		printInOrder(getLeft(tree));
-		if(tree->value != NULL) printf(" %s ", tree->value);	
+		if(tree->value != NULL) {
+			if(valueincoeff(tree->value[0]))
+				printf(" %s", tree->value->coefficient);
+			if(valueinalpha(tree->value[0]))
+				printf("%s", tree->value->alphanumeric);	
 		printInOrder(getRight(tree));	
+		}
 	}
 }
 
 
-
-struct node* buildParseTree(char** tokenExp){
+struct node* buildParseTree(term* tokenExp){
 	struct node* head = (struct node*)malloc(sizeof(struct node));
 	struct node* current = head;
 	int expi = 0;
-	
 
-	while(strcmp(tokenExp[expi], "\0")){
-		printf("WE EXEXUCITNG %s \n", tokenExp[expi]);
-		if(isOpenBracket(tokenExp[expi][0])){
-			insertLeft(current);
-			current = current->left;
-			//printf("---- INSERT LEFT NODE AND GO LEFT\n");
-		}else if(isOperation(tokenExp[expi][0])){
+	while(1){ // loop forever
+		term curTerm = tokenExp[expi];
+		if(curTerm.isTermination == 1)
+			break;
+		
+		//printf(doing c)
+		printf("Doing ");
+		if(valueincoeff(curTerm))
+			printf("%s", curTerm.coefficient);
+		if(valueinalpha(curTerm))
+			printf("%s", curTerm.alphanumeric);	
+		printf("\n");
+		
+		if(curTerm.boolBracket == 1){ //if it is a bracket
+			printf("A Bracket\n");
+			char bracket = curTerm.coefficient[0];
+			if(isOpenBracket(bracket)){
+				insertLeft(current);
+				current = current->left;
+				//printf("---- INSERT LEFT NODE AND GO LEFT\n");
+			}else if(isEndBracket(bracket)){
+				//printf("----------GO UP TO PARENT\n");
+				current = current->parent;
+			}
+		}else if(curTerm.boolisOperation == 1){
+		       printf("An Operation \n");	
 			if(current->value != NULL){
-				//if(operation2Enum((long unsigned int)tokenExp[expi]) == operation2Enum((long unsigned int)current->value)){}
-				if(hasPrecedence(tokenExp[expi][0], current->value[0] )){
+				if(hasPrecedence(curTerm.coefficient[0], current->value->coefficient[0])){
+					printf("----> has Precedence \n");
 					current = current->right;
-					char* temp = current->value;
+					term* temp = current->value;
 					insertLeft(current);
 					current = current->left;
-					setValue(current, temp);
+					setValue(current, temp[0]);
 					current = current->parent;
 				}
 				if(current->right != NULL){
@@ -70,20 +93,18 @@ struct node* buildParseTree(char** tokenExp){
 				}
 			}
 			//printf("---- This is a operation, ");
-			setValue(current, tokenExp[expi]);
+			setValue(current, curTerm);
 			//printf("---- set the value ,");
 			insertRight(current);
 			//printf("---- insert a right node, and go to right node\n");
 			current = current->right;
-		}else if(isDigit(tokenExp[expi][0]) || tokenExp[expi][0] == '.' || isLetter(tokenExp[expi][0])){
-			//printf("---- THIS IS A DIGIT, or char \n");
-			setValue(current, tokenExp[expi]);
+		}else if(curTerm.boolhascoeff == 1 || curTerm.boolhasalpha == 1){
+			printf("A Digit or a Number Or Both \n");
+			//printf("---- THIS IS A DIGIT, or char or a mix of both \n");
+			setValue(current, curTerm);
 			//printf("-After setting a value, and go UP!!!!!!!!!!!!\n");
 			current = current->parent;
-		}else if(isEndBracket(tokenExp[expi][0])){
-			//printf("----------GO UP TO PARENT\n");
-			current = current->parent;
-		}
+		}		
 		expi++;
 	}
 	return head;
@@ -109,9 +130,11 @@ void insertRight(struct node* head){
 	head->right = new;
 }
 
-void setValue(struct node* current, char* value){ 
-	current->value = malloc(sizeof(value));
-	strcpy(current->value, value);
+//only set using one term value
+void setValue(struct node* current, term value){ 
+	current->value = (term*)malloc(sizeof(value));
+	current->value[0] = value;
+	current->length = 1;
 }
 
 struct node* getLeft(struct node* current){
@@ -125,7 +148,7 @@ struct node* getRight(struct node* current){
 	return current->right;
 }
 
-char* getValue(struct node* current){
+term* getValue(struct node* current){
 	return current->value;
 }
 

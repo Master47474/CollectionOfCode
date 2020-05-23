@@ -10,11 +10,12 @@
 #endif
 #include "../InputCapture/InputCapture.h"
 #include "../Parsing/parsetree.c"
-#include "../Evaluation/evaluate.c"
+
+//#include "../Evaluation/evaluate.c"
 
 
 
-//void printDebug(char** string);
+
 void Debug(term* expression);
 // main
 
@@ -23,6 +24,11 @@ int main(void){
 	term* expression = captureInput();
 	printf("done Capture\n");
 	Debug(expression);
+	printf("Build Tree Starting\n");
+	struct node* tree = buildParseTree(expression);
+	printf("Build Tree Done \n");
+	printInOrder(tree);
+	printf("\n");
 	//char** stringy = captureInput();
 	//printDebug(stringy);
 	//printf("before Building\n");
@@ -35,16 +41,6 @@ int main(void){
 	return EXIT_SUCCESS;
 }
 
-
-void printDebug(char** string){
-	int i = 0;
-	printf("{");
-	while(strcmp(string[i], "\0"))
-		printf("\"%s\", ",string[i++]);
-	printf("}\n");
-}
-
-
 void Debug(term* expression){
 	int i = 0;
 	printf("{ ");
@@ -52,14 +48,13 @@ void Debug(term* expression){
 		term curTerm = expression[i++];
 		printf("\"");
 		if(curTerm.isTermination){
-			printf(" }\n");
+			printf("NULL\" }\n");
 			break;
-		}
-		if(curTerm.boolisOperation == 1 || curTerm.boolhascoeff == 1)
+		}else if(curTerm.boolisOperation == 1 || curTerm.boolhascoeff == 1 || curTerm.boolBracket == 1){
 			printf("%s", curTerm.coefficient);
-
-		if(curTerm.boolhasalpha == 1)
+		}else if(curTerm.boolhasalpha == 1){
 			printf("%s", curTerm.alphanumeric);
+		}
 		printf("\", ");
 	}
 }
