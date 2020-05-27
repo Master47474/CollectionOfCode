@@ -4,33 +4,35 @@
 #include <stdlib.h>
 #include <string.h>
 
+//imports
+#ifndef FILE_DEFINITIONS
+#define FILE_DEFINITIONS
+#include "../MainFiles/definitions.c"
+#endif
 
-
-float EvalueateTree(struct node* current){
-	float x, y;
+term* EvalueateTree(struct node* current){
+	term* x, y;
 	
 	// left is x
 	// check if left is an operation
-	printf("Left -> %c \n", current->left->value[0]);
-	if(isOperation(current->left->value[0])){
-		printf("going Left\n");
+	if(current->left->value->boolisOperation == 1){
+		printf("going Left Because Operation\n");
 		x = EvalueateTree(current->left);
 	} else{
-		x = atoi(current->left->value);
+		x = current->left->value ;
 	}
 
 	//right is y
 	//check if right is an operation
-	printf("Right -> %c \n", current->right->value[0]);
-	if(isOperation(current->right->value[0])){
-		printf("going right\n");
+	if(current->right->value->boolisOperation == 1){
+		printf("going right Because Operation\n");
 		y = EvalueateTree(current->right);
 	}else{
-		y = atoi(current->right->value);
+		y = current->right->value;
 	}
-	printf("this is X, %f \n", x);
-	printf("this is Y, %f \n", y);
-	printf("GOING UP\n");
+	//printf("this is X, %f \n", x);
+	//printf("this is Y, %f \n", y);
+	//printf("GOING UP\n");
 	// return x (operation) right
 	if(!strcmp(current->value, "+"))
 		return x + y;
@@ -41,3 +43,10 @@ float EvalueateTree(struct node* current){
 	if(!strcmp(current->value, "/"))
 		return (x/y);
 }
+
+
+
+
+
+
+

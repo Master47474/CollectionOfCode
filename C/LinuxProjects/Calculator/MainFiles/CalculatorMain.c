@@ -7,6 +7,7 @@
 #ifndef FILE_DEFINITIONS
 #define FILE_DEFINITIONS
 #include "definitions.c"
+#include "../Misc/Sorts/countingSort.c"
 #endif
 #include "../InputCapture/InputCapture.h"
 #include "../Parsing/parsetree.c"
@@ -29,6 +30,7 @@ int main(void){
 	printf("Build Tree Done \n");
 	printInOrder(tree);
 	printf("\n");
+	fflush(stdin);
 	//char** stringy = captureInput();
 	//printDebug(stringy);
 	//printf("before Building\n");
@@ -50,9 +52,11 @@ void Debug(term* expression){
 		if(curTerm.isTermination){
 			printf("NULL\" }\n");
 			break;
-		}else if(curTerm.boolisOperation == 1 || curTerm.boolhascoeff == 1 || curTerm.boolBracket == 1){
+		}
+		if(valueincoeff(curTerm) == 1){
 			printf("%s", curTerm.coefficient);
-		}else if(curTerm.boolhasalpha == 1){
+		}
+		if(valueinalpha(curTerm) == 1){
 			printf("%s", curTerm.alphanumeric);
 		}
 		printf("\", ");

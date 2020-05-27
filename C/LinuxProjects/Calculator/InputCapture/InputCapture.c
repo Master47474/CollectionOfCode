@@ -13,6 +13,7 @@
 #ifndef FILE_DEFINITIONS
 #define FILE_DEFINITIONS
 #include "../MainFiles/definitions.c"
+#include "../Misc/Sorts/countingSort.c"
 #endif
 
 
@@ -96,7 +97,7 @@ term* captureInput(void){
 			case INPUT_END:
 			{
 				//create term adds the zeroes for us
-				if(tempPos != 0){
+				if(tempPos > 0 || alphaPos > 0){
 					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
 					//add term
 					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
@@ -128,7 +129,7 @@ term* captureInput(void){
 			break;
 			case INPUT_OPERATION:
 			{
-				if(tempPos != 0){
+				if(tempPos > 0 || alphaPos > 0){
 					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
 					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
 				}
@@ -141,7 +142,7 @@ term* captureInput(void){
 			case INPUT_BRACKET:
 			{
 				
-				if(tempPos != 0){
+				if(tempPos > 0 || alphaPos > 0){
 					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
 					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
 				}
@@ -310,9 +311,20 @@ void appendTerm(term* expression, term addTerm,int* posi, int* tempi, int* alpai
 
 term createTerm(char* coefficient, char* alphanumeric, int coeffPos, int alphanumPos, int boolOperation, int boolBracket, int Termination){
 	//add null chars to coeff and alpha first
+	
 	coefficient[coeffPos] = '\0';
 	alphanumeric[alphanumPos] = '\0';
-		
+	
+	//sort alphanumeric with No count
+	if(alphanumPos > 0){
+		printf("Sup %d\n", alphanumPos);
+		char* sorted = CountingSortNC(alphanumeric);
+		strcpy(alphanumeric, sorted);
+		//printf("--- %s here \n" , CountingSortC(alphanumeric));
+		//printf("Create Term with Alpha ->  %s -> %s \n", alphanumericIn, alphanumeric);	
+	}
+
+
 	term toAdd;
 	toAdd.boolisOperation = boolOperation;
 	toAdd.isTermination = Termination;
@@ -320,7 +332,7 @@ term createTerm(char* coefficient, char* alphanumeric, int coeffPos, int alphanu
 	if(coeffPos == 0){
 		toAdd.boolhascoeff = 0; // no coefficient
 	}else{
-		toAdd.coefficient = (char*)malloc(sizeof(coefficient)+1);
+		toAdd.coefficient = (char*)malloc(sizeof(coefficient)+sizeof(char));
 		strcpy(toAdd.coefficient, coefficient);
 		toAdd.boolhascoeff = 1;
 	}
@@ -328,7 +340,7 @@ term createTerm(char* coefficient, char* alphanumeric, int coeffPos, int alphanu
 	if(alphanumPos == 0){
 		toAdd.boolhasalpha = 0;
 	}else{
-		toAdd.alphanumeric = (char*)malloc(sizeof(alphanumeric) + 1);
+		toAdd.alphanumeric = (char*)malloc(sizeof(alphanumeric) + sizeof(char));
 		strcpy(toAdd.alphanumeric, alphanumeric);
 		toAdd.boolhasalpha = 1;
 	}
