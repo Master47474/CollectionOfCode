@@ -12,7 +12,7 @@
 #include "../InputCapture/InputCapture.h"
 #include "../Parsing/parsetree.c"
 
-//#include "../Evaluation/evaluate.c"
+#include "../Evaluation/evaluate.c"
 
 
 
@@ -31,6 +31,9 @@ int main(void){
 	printInOrder(tree);
 	printf("\n");
 	fflush(stdin);
+	term* result = EvalueateTree(tree);
+	Debug(result);	
+	printf("\n");
 	//char** stringy = captureInput();
 	//printDebug(stringy);
 	//printf("before Building\n");
