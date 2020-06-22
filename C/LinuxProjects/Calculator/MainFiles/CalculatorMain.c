@@ -26,13 +26,15 @@ int main(void){
 	printf("done Capture\n");
 	Debug(expression);
 	printf("Build Tree Starting\n");
-	struct node* tree = buildParseTree(expression);
+	node* tree = buildParseTree(expression);
 	printf("Build Tree Done \n");
 	printInOrder(tree);
 	printf("\n");
 	fflush(stdin);
-	term* result = EvalueateTree(tree);
-	Debug(result);	
+	printf("About to Evaluate\n");
+	node* result = EvalueateTree(tree);
+	printf("Evalueate Done\n");
+	printInOrder(result);
 	printf("\n");
 	//char** stringy = captureInput();
 	//printDebug(stringy);

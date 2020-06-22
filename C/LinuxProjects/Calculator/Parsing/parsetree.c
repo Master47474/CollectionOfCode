@@ -9,13 +9,13 @@
 #include "../MainFiles/definitions.c"
 #endif
 
-struct node{
+typedef struct node{
 	struct node* parent;
 	struct node* left;
 	struct node* right;
 	term* value; //list of terms
 	int length;
-};
+}node;
 
 
 //setting
