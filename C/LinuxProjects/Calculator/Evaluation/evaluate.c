@@ -111,6 +111,8 @@ node* addTerms(node* xx, node* yy, int lx, int ly){
 	printf("WE Matched Terms\n");
 	int counter = 0;
 	int* counted = malloc(sizeof(int) *(ly + 1));
+	for(int i = 0; i < ly+1; i++)
+		counted[i] = -1;
 	while(pairs[counter] != -1){
 		// add 0 and 1 to each other
 		int i = pairs[counter];
@@ -120,9 +122,7 @@ node* addTerms(node* xx, node* yy, int lx, int ly){
 		int xi = strToint(x[i].coefficient);
 		int yj = strToint(y[j].coefficient);
 		int total = xi + yj;
-		printf("%d \n", total);
 		char* strTotal = intTostr(total, 10);
-		printf("%s \n", strTotal);
 		//now reallocate memory for x[i]->coefficient
 		x[i].coefficient = (char*)realloc(x[i].coefficient, sizeof(strTotal));
 		strcpy(x[i].coefficient, strTotal);
@@ -131,18 +131,21 @@ node* addTerms(node* xx, node* yy, int lx, int ly){
 		counted[j] = 1;
 	}
 	counted[ly] = 0; //to mark the end of counted
-	printf("Done The Addition\n");
 
 	//for indicies of y that were not a match we have to append to the end of 
 	int terms = 0;
-	for(int i = 0; counted[terms] != 0; i++)
-	       terms++;
+	for(int i = 0; counted[i] != 0; i++){
+		if(counted[terms] == -1)
+			terms++;
+	}
 
+	printf("We Have %d Y Terms To Be added\n", terms);
 	term* toappend = (term*)malloc(sizeof(term) * terms); 	
 	int tcount = 0;
 	for(int i = 0; counted[i] != 0; i++){
-		if(counted[i] == 0){//addition is communitive
+		if(counted[i] == -1){//addition is communitive
 			toappend[tcount++] = y[i];
+			printf("Addpend\n");
 		}
 	}
 	printf("Done Checking What needs to be added to the end\n");
@@ -159,9 +162,11 @@ node* addTerms(node* xx, node* yy, int lx, int ly){
 	printf("Created the Term\n");
 	tcount = 0;
 	printf("Now to append the Terms\n");
-	for(int i = lx; i < lx+2*terms; i+= 2){ //as every 2 we want to append a new term
-				x[i] = operation;
-				x[i+1] = toappend[tcount++];
+	for(int i = lx; i < lx+(2*terms); i+= 2){ //as every 2 we want to append a new term
+				xx->value[i] = operation;
+				xx->value[i+1] = toappend[tcount++];
+				printf("We Appended This\n");
+				printf("Append At %d and %d\n", i, i+1);
 	}
 	xx->length = lx + 2*terms;
 	printf("We are finished\n");

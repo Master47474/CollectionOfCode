@@ -18,6 +18,7 @@
 
 
 void Debug(term* expression);
+void PrintExpression(term* expression);
 // main
 
 int main(void){
@@ -34,8 +35,11 @@ int main(void){
 	printf("About to Evaluate\n");
 	node* result = EvalueateTree(tree);
 	printf("Evalueate Done\n");
-	printInOrder(result);
-	printf("\n");
+	//printInOrder(result);
+	//printf("\n");
+	//Debug(result->value);
+	//printf("\n");
+	PrintExpression(result->value);
 	//char** stringy = captureInput();
 	//printDebug(stringy);
 	//printf("before Building\n");
@@ -65,5 +69,23 @@ void Debug(term* expression){
 			printf("%s", curTerm.alphanumeric);
 		}
 		printf("\", ");
+	}
+}
+
+void PrintExpression(term* expression){
+	int i = 0;
+	while(1){
+		term curTerm = expression[i++];
+		if(curTerm.isTermination){
+			printf("\n");
+			break;
+		}
+		if(valueincoeff(curTerm) == 1){
+			if( strcmp(curTerm.coefficient, "1") || valueinalpha(curTerm) == 0)
+				printf("%s", curTerm.coefficient);
+		}
+		if(valueinalpha(curTerm) == 1)
+			printf("%s", curTerm.alphanumeric);
+		printf(" ");
 	}
 }

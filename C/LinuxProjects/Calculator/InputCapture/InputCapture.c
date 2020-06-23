@@ -310,8 +310,10 @@ void appendTerm(term* expression, term addTerm,int* posi, int* tempi, int* alpai
 
 
 term createTerm(char* coefficient, char* alphanumeric, int coeffPos, int alphanumPos, int boolOperation, int boolBracket, int Termination){
+	//all alpnamumerics have coefficient of 1
+	if(coeffPos == 0)
+		coefficient[coeffPos++] = '1';
 	//add null chars to coeff and alpha first
-	
 	coefficient[coeffPos] = '\0';
 	alphanumeric[alphanumPos] = '\0';
 	
