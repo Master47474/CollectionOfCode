@@ -55,7 +55,7 @@ node* EvalueateTree(struct node* current){
 		printf("We Are Adding\n");
 		return addTerms(x, y, lx, ly);
 	}
-	//if(!strcmp(current->value, "-"))
+	//if(!strcmp(current->value, "-")) //subtratcing is just adding negative lol
 		//return subtractTerms(x, y);
 	//if(!strcmp(current->value, "*"))
 		//return multiplyTerms(x, y);

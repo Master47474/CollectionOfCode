@@ -75,10 +75,9 @@ term* captureInput(void){
 	int alphaPos = 0;
 	char* BracketChecking = malloc(sizeof(char) * bufsize);
 	int BracketCheckingPos = 0;
-
 	int decimalNumber = FALSE;
-	int is_negative = 0; // mod 2 : =0 then positive : 1 negative
-       	int operationinputed = 0;	
+	int is_negative = 0; // mod 2 : =0 then positive : 1 negative 
+	int neg_counter = 0;
 
 	if(!input || !tempString || !BracketChecking || !alphaString){
 		printf("Allocation Error\n");
@@ -124,12 +123,7 @@ term* captureInput(void){
 			break;
 			case INPUT_DIGIT:
 			{
-				if(is_negative % 2 == 1) 
-					tempString[tempPos++] = '-';
-				operationinputed = 0;
-				is_negative = 0;
-				if(c == DECIMALPOINT) 
-					decimalNumber = TRUE;
+				if(c == DECIMALPOINT) decimalNumber = TRUE;
 				tempString[tempPos++] = c;
 				pos--;
 			}
@@ -137,17 +131,10 @@ term* captureInput(void){
 			case INPUT_OPERATION:
 			{
 				if(c == '-'){
-					is_negative++;
+					neg_counter++;
 					c = '+'; // then let c be + to replace the -
-					if(operationinputed == 1)
-						continue;
 					//this - will be kept the the next number coming after the +
-				}else{
-					operationinputed = 1;
 				}
-
-				if(is_negative > 1) //hence we have more than one do not make more +
-					continue;
 				if(tempPos > 0 || alphaPos > 0){
 					term toAdd = createTerm(tempString, alphaString, tempPos, alphaPos, FALSE, FALSE, FALSE);
 					appendTerm(input, toAdd, &pos, &tempPos, &alphaPos);
