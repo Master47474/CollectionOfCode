@@ -81,7 +81,7 @@ void PrintExpression(term* expression){
 			break;
 		}
 		if(valueincoeff(curTerm) == 1){
-			if( strcmp(curTerm.coefficient, "1") || valueinalpha(curTerm) == 0)
+			if(strcmp(curTerm.coefficient, "1") || valueinalpha(curTerm) == 0)
 				printf("%s", curTerm.coefficient);
 		}
 		if(valueinalpha(curTerm) == 1)

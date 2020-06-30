@@ -170,6 +170,8 @@ node* addTerms(node* xx, node* yy, int lx, int ly){
 	}
 	xx->length = lx + 2*terms;
 	printf("We are finished\n");
+	free(y);
+	free(yy);
 	return xx;	
 }
 
