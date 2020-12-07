@@ -33,6 +33,9 @@ char** freadlines(char* dir){
     buf[i++] = c;
 
     if(c == '\n'){
+      if(i == 1){
+        i++;
+      }
       buf[i-1] = '\0';
       if(k >= fsize){
         fsize *= 2;
@@ -49,9 +52,9 @@ char** freadlines(char* dir){
     }
   }
 
-  if(i != 0){
+  if(i > 0){
     buf[i-1] = '\0';
-    if(k == fsize){
+    if(k >= fsize){
       fsize *= 2;
       filelines = (char**)realloc(filelines, sizeof(char*) * fsize);
       if(!filelines){
@@ -65,11 +68,13 @@ char** freadlines(char* dir){
   }
 
   // The Null char to indicate the end of the array
-  filelines[k-1] = (char*)malloc(sizeof(char)*2);
+  filelines[k-1] = (char*)malloc(sizeof(char)*3);
   filelines[k-1][0] = '\0';
+  filelines[k-1][1] = '\0';
 
   return filelines;
 }
+
 
 //return the position of charcter c in string s
 // or -1 if c not found
@@ -141,6 +146,7 @@ char** split(char* line, char token){
       exit(0);
     }
   }
+
   if(bufl != 0){
     buf[bufl] = '\0';
     if(k+1 >= ltemp){
@@ -155,16 +161,9 @@ char** split(char* line, char token){
     strcpy(temp[k++] , buf);
     bufl = 0;
   }
-  temp[k] = '\0';
 
-  switch(k){
-    case 0:
-      strcpy(temp[0], line);
-      temp[1] = '\0';
-      temp = (char**)realloc(temp, sizeof(char*) * 2);
-    default:
-      break;
-  };
+  temp[k] = (char*)malloc(sizeof(char)* 2);
+  temp[k][0] = '\0';
 
   return temp;
 }
