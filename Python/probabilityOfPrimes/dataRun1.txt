@@ -1,0 +1,32 @@
+9.67 % flagged on first
+9.606 % flagged on first two
+9.596 % flagged on three
+9.592 % flagged on all four
+9.592 % are primes in first  100000
+
+
+
+For the first  100,000  ints the following happened
+9670  numbers FLT was true for one equation
+9606  numbers FLT was true for first two equations
+9596  numbers FLT was true for three equations
+9592  numbers FLT was true for all four equations
+9592  numbers are actual primes in the first 100,000
+
+-------------------------------------------------------------------------------
+Stats Are
+9.045 % flagged on first
+9.003 % flagged on first two
+8.9955 % flagged on three
+8.9925 % flagged on all four
+8.192499999999999 % are primes in first  200000
+
+
+For the first  200000  ints the following happened
+18090  numbers FLT was true for one equation
+18006  numbers FLT was true for first two equations
+17991  numbers FLT was true for three equations
+17985  numbers FLT was true for all four equations
+16385  numbers are actual primes in the first  200000  ints
+
+

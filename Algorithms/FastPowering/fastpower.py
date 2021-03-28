@@ -1,7 +1,7 @@
 
-g = 9
-A = 1892
-m = 10911
+g = 7
+A = 4
+m = 9
 """
 print("Lets Fast Power (Modulo N)")
 g = int(input("input the base >"))
